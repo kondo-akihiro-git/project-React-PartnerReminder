@@ -68,7 +68,8 @@ const MeetingList = () => {
       <Stack>
         <SimpleGrid columns={[2, null, 3]}>
           {meetings.map((meeting) => (
-            <Card.Root key={meeting.id} overflow="hidden" shadow="md" m={5}>
+            <Card.Root key={meeting.id} overflow="hidden" shadow="md" m={5} cursor="pointer"
+              onClick={() => navigate(`/meetings/${meeting.id}`)}>
               <Card.Header>
                 <Heading size="lg" mb={2}>
                   {meeting.title || 'タイトルなし'}
