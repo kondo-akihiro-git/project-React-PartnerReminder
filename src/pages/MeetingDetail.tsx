@@ -110,6 +110,7 @@ const MeetingDetail = () => {
 
                             <Box mb={4}>
                                 <Text fontWeight="bold" mb={1}>自分の服装</Text>
+                                {meeting.my_appearance_image_path && (
                                 <Image
                                     src={`http://localhost:8000/${meeting.my_appearance_image_path}`}
                                     alt="自分の服装"
@@ -117,6 +118,7 @@ const MeetingDetail = () => {
                                     objectFit="cover"
                                     borderRadius="md"
                                 />
+                                )}
                             </Box>
 
                             <Box mb={4}>

@@ -26,6 +26,7 @@ const MeetingList = () => {
           date: m[3],
           image: m[4],
         }));
+        formatted.sort((a:any, b:any) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setMeetings(formatted);
       });
   }, []);
