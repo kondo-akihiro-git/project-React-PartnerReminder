@@ -8,7 +8,7 @@ const Top = () => {
     <Box p={6} >
       <Stack h="20vh" />
       <Stack h="40vh" alignItems='center' justifyContent="center">
-        <Heading as="h1" fontSize="min(10vw, 30vh)" mb={4}>
+        <Heading as="h1" fontSize="min(10vw, 30vh)" fontFamily="serif" mb={4}>
           Partner Reminder
         </Heading>
       </Stack>
