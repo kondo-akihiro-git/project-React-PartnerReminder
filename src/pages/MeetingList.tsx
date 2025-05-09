@@ -35,51 +35,48 @@ const MeetingList = () => {
       <Stack direction="row">
         <Stack width="40%" h="20" direction="row" alignItems="center">
           <Heading fontSize="5vw" fontFamily="serif" onClick={() => navigate("/")}>PartnerReminder</Heading>
-          </Stack>
+        </Stack>
         <Stack width="20%" h="20" />
         <Stack width="40%" h="20" direction="row" justifyContent="flex-end" alignItems="center">
-        <Button
-        minWidth="20vw"
-        width="40%"
-        fontSize="md"
-          variant="surface"
-        >
-          ログアウト
-        </Button>
-        <Button
-        minWidth="20vw"
-        width="40%"
-        fontSize="md"
-          variant="surface"
-        >
-          ユーザー設定
-        </Button>
+          <Button
+            minWidth="20vw"
+            width="40%"
+            fontSize="md"
+            variant="surface"
+          >
+            ログアウト
+          </Button>
+          <Button
+            minWidth="20vw"
+            width="40%"
+            fontSize="md"
+            variant="surface"
+          >
+            ユーザー設定
+          </Button>
 
         </Stack>
       </Stack>
       <Stack h="2" />
       <Stack>
-      <HStack>
-        <Separator flex="1" />
-        <Text flexShrink="0">デート一覧</Text>
-        <Separator flex="1" />
-      </HStack>
+        <HStack>
+          <Separator flex="1" />
+          <Text flexShrink="0" fontSize="lg">デート一覧</Text>
+          <Separator flex="1" />
+        </HStack>
       </Stack>
       <Stack>
         <SimpleGrid columns={[2, null, 3]}>
-          {meetings.map((m) => (
-            <Card.Root key={m.id} overflow="hidden" shadow="md" m={5}>
-              {/* {m.image && (
-                <Image src={m.image} alt="image" boxSize="100%" objectFit="cover" />
-              )} */}
+          {meetings.map((meeting) => (
+            <Card.Root key={meeting.id} overflow="hidden" shadow="md" m={5}>
               <Card.Header>
                 <Heading size="lg" mb={2}>
-                  {m.title || 'タイトルなし'}
+                  {meeting.title || 'タイトルなし'}
                 </Heading>
               </Card.Header>
               <Card.Body>
-                <Text mb={2}>{m.location}</Text>
-                <Text>{m.date}</Text>
+                <Text mb={2}>{meeting.location}</Text>
+                <Text>{meeting.date}</Text>
               </Card.Body>
             </Card.Root>
           ))}
