@@ -1,8 +1,15 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Top from './pages/Top';
+import MeetingList from './pages/MeetingList';
+
 function App() {
   return (
-    <div className="App">
-      PartnerReminder activates
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Top />} />
+        <Route path="/meetings" element={<MeetingList />} />
+      </Routes>
+    </Router>
   );
 }
 
