@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Box, Text, Image, Heading, SimpleGrid, Card, Stack, Container, Separator, HStack, Button } from '@chakra-ui/react';
+import { Header } from '@chakra-ui/react/dist/types/components/card/namespace';
 
 interface Meeting {
   id: number;
@@ -9,6 +12,7 @@ interface Meeting {
 }
 
 const MeetingList = () => {
+  const navigate = useNavigate();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
 
   useEffect(() => {
@@ -27,19 +31,61 @@ const MeetingList = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">デート一覧</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {meetings.map((m) => (
-          <div key={m.id} className="border p-4 rounded shadow">
-            {m.image && <img src={m.image} alt="image" className="mb-2 w-full h-48 object-cover rounded" />}
-            <h3 className="text-xl font-bold">{m.title || 'タイトルなし'}</h3>
-            <p>{m.location}</p>
-            <p>{m.date}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Box p={6}>
+      <Stack direction="row">
+        <Stack width="40%" h="20" direction="row" alignItems="center">
+          <Heading fontSize="5vw" fontFamily="serif" onClick={() => navigate("/")}>PartnerReminder</Heading>
+          </Stack>
+        <Stack width="20%" h="20" />
+        <Stack width="40%" h="20" direction="row" justifyContent="flex-end" alignItems="center">
+        <Button
+        minWidth="20vw"
+        width="40%"
+        fontSize="md"
+          variant="surface"
+        >
+          ログアウト
+        </Button>
+        <Button
+        minWidth="20vw"
+        width="40%"
+        fontSize="md"
+          variant="surface"
+        >
+          ユーザー設定
+        </Button>
+
+        </Stack>
+      </Stack>
+      <Stack h="2" />
+      <Stack>
+      <HStack>
+        <Separator flex="1" />
+        <Text flexShrink="0">デート一覧</Text>
+        <Separator flex="1" />
+      </HStack>
+      </Stack>
+      <Stack>
+        <SimpleGrid columns={[2, null, 3]}>
+          {meetings.map((m) => (
+            <Card.Root key={m.id} overflow="hidden" shadow="md" m={5}>
+              {/* {m.image && (
+                <Image src={m.image} alt="image" boxSize="100%" objectFit="cover" />
+              )} */}
+              <Card.Header>
+                <Heading size="lg" mb={2}>
+                  {m.title || 'タイトルなし'}
+                </Heading>
+              </Card.Header>
+              <Card.Body>
+                <Text mb={2}>{m.location}</Text>
+                <Text>{m.date}</Text>
+              </Card.Body>
+            </Card.Root>
+          ))}
+        </SimpleGrid>
+      </Stack>
+    </Box>
   );
 };
 

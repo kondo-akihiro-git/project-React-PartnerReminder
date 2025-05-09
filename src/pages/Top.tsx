@@ -1,18 +1,29 @@
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, Center, Heading, Stack } from '@chakra-ui/react';
 
 const Top = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6 text-center">
-      <h1 className="text-3xl font-bold mb-4">Partner Reminder</h1>
-      <button
-        onClick={() => navigate('/meetings')}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        デート一覧を見る
-      </button>
-    </div>
+    <Box p={6} >
+      <Stack h="20vh" />
+      <Stack h="40vh" alignItems='center' justifyContent="center">
+        <Heading as="h1" fontSize="min(10vw, 30vh)" mb={4}>
+          Partner Reminder
+        </Heading>
+      </Stack>
+      <Stack h="40vh" alignItems='center'>
+        <Button
+          minWidth="20vw"
+          onClick={() => navigate('/meetings')}
+          colorScheme="blue"
+          size="lg"
+          variant="solid"
+        >
+          デート一覧を見る
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 
