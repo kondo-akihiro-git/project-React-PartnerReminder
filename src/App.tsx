@@ -1,7 +1,7 @@
 function App() {
   return (
     <div className="App">
-      Partner Reminder activates
+      PartnerReminder activates
     </div>
   );
 }
