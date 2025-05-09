@@ -1,6 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Box, Heading, Text, Stack, Image, HStack, Separator, Spinner, Textarea, Card, Input, Button, List } from '@chakra-ui/react';
+import { IconButton } from '@chakra-ui/react';
+import { EditIcon } from '@chakra-ui/icons';
+
 
 interface MeetingDetail {
     id: number;
@@ -129,9 +132,29 @@ const MeetingDetail = () => {
                     </Card.Body>
                 </Card.Root>
             </Stack>
+            <IconButton
+                value="de"
+                aria-label="編集"
+                position="fixed"
+                bottom="20px"
+                right="20px"
 
+                minWidth="20%"
+                colorScheme="teal"
+                borderRadius="full"
+                boxShadow="lg"
+                size="lg"
+                zIndex={1000}
+                colorPalette="green"
+                onClick={() => {
+                    // 例えば編集画面へ遷移したい場合
+                    navigate(`/meetings`);
+                }}>
+                デート一覧
+            </IconButton>
 
         </Box>
+
     );
 };
 
