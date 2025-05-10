@@ -1,9 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { Box, Heading, Text, Stack, Image, HStack, Separator, Spinner, Textarea, Card, Input, Button, List } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
+import { Box, Heading, Text, Stack, Image, HStack, Separator, Spinner, Textarea, Card, Input, Button, List, Dialog, Portal, Field, CloseButton, DialogCloseTrigger, DialogTrigger, DialogRoot } from '@chakra-ui/react';
 import { IconButton } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
-
+import AutoResizeTextarea from "../components/AutoResizeTextare";
 
 interface MeetingDetail {
     id: number;
@@ -18,11 +17,15 @@ interface MeetingDetail {
     todo_for_next: string;
 }
 
+
 const MeetingDetail = () => {
     const navigate = useNavigate();
     const { meetingId } = useParams<{ meetingId: string }>();
     const [meeting, setMeeting] = useState<MeetingDetail | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+    const [editedMeeting, setEditedMeeting] = useState<MeetingDetail | null>(null);
+
 
     useEffect(() => {
         fetch(`http://localhost:8000/meetings/${meetingId}`)
@@ -37,7 +40,22 @@ const MeetingDetail = () => {
 
     if (!meeting) return <Text>デート詳細が見つかりませんでした。</Text>;
 
+    // 画像アップロードの処理
+    const handleImageUpload = async (file: File) => {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await fetch('http://localhost:8000/upload', {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+        return data.imagePath; // サーバーから返される画像のパスを返す
+    };
+
+
+
     return (
+
         <Box p={6}>
             <Stack direction="row">
                 <Stack width="40%" h="20" direction="row" alignItems="center">
@@ -96,6 +114,7 @@ const MeetingDetail = () => {
                             <Box mb={4}>
                                 <Text fontWeight="bold" mb={1}>イベント</Text>
                                 <Textarea value={String(meeting.event_names).replace(/\\n/g, '\n')} readOnly style={{ whiteSpace: 'pre-wrap' }} />
+
                             </Box>
 
                             <Box mb={4}>
@@ -106,18 +125,19 @@ const MeetingDetail = () => {
                             <Box mb={4}>
                                 <Text fontWeight="bold" mb={1}>彼女の服装</Text>
                                 <Textarea value={String(meeting.partner_appearances).replace(/\\n/g, '\n')} readOnly style={{ whiteSpace: 'pre-wrap' }} />
+
                             </Box>
 
                             <Box mb={4}>
                                 <Text fontWeight="bold" mb={1}>自分の服装</Text>
                                 {meeting.my_appearance_image_path && (
-                                <Image
-                                    src={`http://localhost:8000/${meeting.my_appearance_image_path}`}
-                                    alt="自分の服装"
-                                    h="10vh"
-                                    objectFit="cover"
-                                    borderRadius="md"
-                                />
+                                    <Image
+                                        src={`http://localhost:8000/${meeting.my_appearance_image_path}`}
+                                        alt="自分の服装"
+                                        h="10vh"
+                                        objectFit="cover"
+                                        borderRadius="md"
+                                    />
                                 )}
                             </Box>
 
@@ -154,8 +174,200 @@ const MeetingDetail = () => {
                 }}>
                 デート一覧
             </IconButton>
+            <IconButton
+                value="de"
+                aria-label="編集"
+                position="fixed"
+                bottom="90px"
+                right="20px"
 
+                minWidth="20%"
+                colorScheme="teal"
+                borderRadius="full"
+                boxShadow="lg"
+                size="lg"
+                zIndex={1000}
+                colorPalette="green"
+                onClick={() => {
+                    setEditedMeeting(meeting);
+                    setEditDialogOpen(true);
+                }}>
+                デート編集
+            </IconButton>
+
+
+
+            {/* 編集ダイアログ */}
+            {/* {editedMeeting && (
+                <Dialog.Root open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
+                    <Portal>
+                    <Dialog.Backdrop onClick={() => setEditDialogOpen(false)} />
+
+                        <Dialog.Positioner>
+                            <Dialog.Content>
+                                <Dialog.Header>
+                                    <Dialog.Title>デートを編集</Dialog.Title>
+                                </Dialog.Header>
+                                <Dialog.Body>
+                                    <Stack gap="4">
+                                        <Field.Root>
+                                            <Field.Label>タイトル</Field.Label>
+                                            <Input
+
+                                                value={editedMeeting.title}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, title: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                        <Field.Root>
+                                            <Field.Label>場所</Field.Label>
+                                            <Input
+                                                value={editedMeeting.location}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, location: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                        <Field.Root>
+                                            <Field.Label>日付</Field.Label>
+                                            <Input
+                                                type="date"
+                                                value={editedMeeting.date}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, date: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                        <Field.Root>
+                                            <Field.Label>イベント</Field.Label>
+                                            <AutoResizeTextarea
+                                                value={editedMeeting.event_names}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, event_names: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                        <Field.Root>
+                                            <Field.Label>話した話題</Field.Label>
+                                            <AutoResizeTextarea
+                                                value={editedMeeting.talked_topics}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, talked_topics: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+                                        <Field.Root>
+                                            <Field.Label>彼女の服装</Field.Label>
+                                            <AutoResizeTextarea
+                                                value={editedMeeting.partner_appearances}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, partner_appearances: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+
+                                        <Field.Root>
+                                            <Field.Label>自分の服装</Field.Label>
+                                            <Box>
+                                                <Image
+                                                    src={`http://localhost:8000/${editedMeeting.my_appearance_image_path}`}
+                                                    alt="自分の服装"
+                                                    h="10vh"
+                                                    objectFit="cover"
+                                                    borderRadius="md"
+                                                />
+                                                <Input
+                                                    type="file"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            // 画像アップロードの処理を追加
+                                                            const formData = new FormData();
+                                                            formData.append('image', file);
+                                                            // ここでAPI経由でアップロード処理を行う
+                                                        }
+                                                    }}
+                                                />
+                                            </Box>
+                                        </Field.Root>
+
+
+                                        <Field.Root>
+                                            <Field.Label>相手の良いところ</Field.Label>
+                                            <AutoResizeTextarea
+                                                value={editedMeeting.partner_good_points}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, partner_good_points: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                        <Field.Root>
+                                            <Field.Label>次回に向けて</Field.Label>
+                                            <AutoResizeTextarea
+                                                value={editedMeeting.todo_for_next}
+                                                onChange={(e) =>
+                                                    setEditedMeeting({ ...editedMeeting, todo_for_next: e.target.value })
+                                                }
+                                            />
+                                        </Field.Root>
+
+                                    </Stack>
+                                </Dialog.Body>
+                                <Dialog.Footer>
+                                    <Dialog.ActionTrigger asChild>
+                                    <Button variant="outline">キャンセル</Button>
+
+                                    </Dialog.ActionTrigger>
+                                    <Button
+                                        colorScheme="teal"
+                                        onClick={async () => {
+                                            if (!editedMeeting) return;
+
+                                            try {
+                                                const res = await fetch(`http://localhost:8000/meetings/${meetingId}`, {
+                                                    method: "PUT",
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                    },
+                                                    body: JSON.stringify(editedMeeting),
+                                                });
+
+                                                if (!res.ok) {
+                                                    const errorData = await res.json();
+                                                    console.error("更新エラー:", errorData);
+                                                    alert("更新に失敗しました。");
+                                                    return;
+                                                }
+
+                                                const result = await res.json();
+                                                console.log("更新成功:", result);
+                                                setMeeting(editedMeeting);  // ローカルステートも更新
+                                                setEditDialogOpen(false);   // ダイアログを閉じる
+                                            } catch (error) {
+                                                console.error("通信エラー:", error);
+                                                alert("通信エラーが発生しました。");
+                                            }
+                                        }}
+                                    >
+                                        保存
+                                    </Button>
+
+                                </Dialog.Footer>
+                            </Dialog.Content>
+                        </Dialog.Positioner>
+                    </Portal>
+                </Dialog.Root>
+            )} */}
         </Box>
+
+
 
     );
 };
