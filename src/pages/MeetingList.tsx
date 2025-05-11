@@ -1,7 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Box, Text, Image, Heading, SimpleGrid, Card, Stack, Container, Separator, HStack, Button } from '@chakra-ui/react';
-import { Header } from '@chakra-ui/react/dist/types/components/card/namespace';
+import {
+  Box,
+  Typography,
+  Stack,
+  Button,
+  Divider,
+  Card,
+  CardHeader,
+  CardContent,
+} from '@mui/material';
 
 interface Meeting {
   id: number;
@@ -26,64 +34,72 @@ const MeetingList = () => {
           date: m[3],
           image: m[4],
         }));
-        formatted.sort((a:any, b:any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setMeetings(formatted);
       });
   }, []);
 
   return (
-    <Box p={6}>
-      <Stack direction="row">
-        <Stack width="40%" h="20" direction="row" alignItems="center">
-          <Heading fontSize="5vw" fontFamily="serif" onClick={() => navigate("/")}>PartnerReminder</Heading>
-        </Stack>
-        <Stack width="20%" h="20" />
-        <Stack width="40%" h="20" direction="row" justifyContent="flex-end" alignItems="center">
-          <Button
-            minWidth="20vw"
-            width="40%"
-            fontSize="md"
-            variant="surface"
-          >
+    <Box p={4}>
+      {/* Header */}
+      <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+        <Box width="40%" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
+          <Typography variant="h3" fontFamily="serif">
+            PartnerReminder
+          </Typography>
+        </Box>
+        <Box width="20%" />
+        <Stack direction="row" spacing={2} justifyContent="flex-end" width="40%">
+          <Button variant="outlined" sx={{ minWidth: '20vw' }}>
             ログアウト
           </Button>
-          <Button
-            minWidth="20vw"
-            width="40%"
-            fontSize="md"
-            variant="surface"
-          >
+          <Button variant="outlined" sx={{ minWidth: '20vw' }}>
             ユーザー設定
           </Button>
-
         </Stack>
       </Stack>
-      <Stack h="2" />
-      <Stack>
-        <HStack>
-          <Separator flex="1" />
-          <Text flexShrink="0" fontSize="lg">デート一覧</Text>
-          <Separator flex="1" />
-        </HStack>
-      </Stack>
-      <Stack>
-        <SimpleGrid columns={[2, null, 3]}>
-          {meetings.map((meeting) => (
-            <Card.Root key={meeting.id} overflow="hidden" shadow="md" m={5} cursor="pointer"
-              onClick={() => navigate(`/meetings/${meeting.id}`)}>
-              <Card.Header>
-                <Heading size="lg" mb={2}>
-                  {meeting.title || 'タイトルなし'}
-                </Heading>
-              </Card.Header>
-              <Card.Body>
-                <Text mb={2}>{meeting.location}</Text>
-                <Text>{meeting.date}</Text>
-              </Card.Body>
-            </Card.Root>
-          ))}
-        </SimpleGrid>
-      </Stack>
+
+      {/* Divider */}
+      <Box my={2}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Divider sx={{ flex: 1 }} />
+          <Typography variant="h6" noWrap>
+            デート一覧
+          </Typography>
+          <Divider sx={{ flex: 1 }} />
+        </Stack>
+      </Box>
+
+      {/* Meeting Cards Grid */}
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          xs: 'repeat(2, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+        }}
+        gap={2}
+        mt={3}
+      >
+        {meetings.map((meeting) => (
+          <Card
+            key={meeting.id}
+            sx={{ m: 1, cursor: 'pointer' }}
+            onClick={() => navigate(`/meetings/${meeting.id}`)}
+          >
+            <CardHeader
+              title={meeting.title || 'タイトルなし'}
+              titleTypographyProps={{ variant: 'h6' }}
+            />
+            <CardContent>
+              <Typography variant="body1" gutterBottom>
+                {meeting.location}
+              </Typography>
+              <Typography variant="body2">{meeting.date}</Typography>
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
     </Box>
   );
 };
