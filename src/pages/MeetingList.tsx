@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardContent,
 } from '@mui/material';
+import Header from '../components/Header';
 
 interface Meeting {
   id: number;
@@ -22,6 +23,8 @@ interface Meeting {
 const MeetingList = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/meetings')
@@ -39,33 +42,31 @@ const MeetingList = () => {
       });
   }, []);
 
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setAnchorEl(null);
+  };
+
   return (
     <Box p={4}>
       {/* Header */}
-      <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-        <Box width="40%" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
-          <Typography variant="h3" fontFamily="serif">
-            PartnerReminder
-          </Typography>
-        </Box>
-        <Box width="20%" />
-        <Stack direction="row" spacing={2} justifyContent="flex-end" width="40%">
-          <Button variant="outlined" sx={{ minWidth: '20vw' }}>
-            ログアウト
-          </Button>
-          <Button variant="outlined" sx={{ minWidth: '20vw' }}>
-            ユーザー設定
-          </Button>
-        </Stack>
-      </Stack>
-
-      {/* Divider */}
+      <Header
+        handleMenuClick={handleMenuClick}
+        handleMenuClose={handleMenuClose}
+        menuOpen={menuOpen}
+        handleUserSettings={() => {}}
+        handleLogout={() => {}}
+        anchorEl={anchorEl}
+      />
       <Box my={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Divider sx={{ flex: 1 }} />
-          <Typography variant="h6" noWrap>
-            デート一覧
-          </Typography>
+          <Typography variant="h6" noWrap>デート詳細</Typography>
           <Divider sx={{ flex: 1 }} />
         </Stack>
       </Box>
