@@ -1,7 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Box, Text, Image, Heading, SimpleGrid, Card, Stack, Container, Separator, HStack, Button } from '@chakra-ui/react';
-import { Header } from '@chakra-ui/react/dist/types/components/card/namespace';
+import {
+  Box,
+  Typography,
+  Stack,
+  Button,
+  Divider,
+  Card,
+  CardHeader,
+  CardContent,
+} from '@mui/material';
+import Header from '../components/Header';
 
 interface Meeting {
   id: number;
@@ -14,6 +23,8 @@ interface Meeting {
 const MeetingList = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     fetch('http://localhost:8000/meetings')
@@ -26,63 +37,70 @@ const MeetingList = () => {
           date: m[3],
           image: m[4],
         }));
+        formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setMeetings(formatted);
       });
   }, []);
 
-  return (
-    <Box p={6}>
-      <Stack direction="row">
-        <Stack width="40%" h="20" direction="row" alignItems="center">
-          <Heading fontSize="5vw" fontFamily="serif" onClick={() => navigate("/")}>PartnerReminder</Heading>
-        </Stack>
-        <Stack width="20%" h="20" />
-        <Stack width="40%" h="20" direction="row" justifyContent="flex-end" alignItems="center">
-          <Button
-            minWidth="20vw"
-            width="40%"
-            fontSize="md"
-            variant="surface"
-          >
-            ログアウト
-          </Button>
-          <Button
-            minWidth="20vw"
-            width="40%"
-            fontSize="md"
-            variant="surface"
-          >
-            ユーザー設定
-          </Button>
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
 
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setAnchorEl(null);
+  };
+
+  return (
+    <Box p={4}>
+      {/* Header */}
+      <Header
+        handleMenuClick={handleMenuClick}
+        handleMenuClose={handleMenuClose}
+        menuOpen={menuOpen}
+        handleUserSettings={() => {}}
+        handleLogout={() => {}}
+        anchorEl={anchorEl}
+      />
+      <Box my={2}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Divider sx={{ flex: 1 }} />
+          <Typography variant="h6" noWrap>デート詳細</Typography>
+          <Divider sx={{ flex: 1 }} />
         </Stack>
-      </Stack>
-      <Stack h="2" />
-      <Stack>
-        <HStack>
-          <Separator flex="1" />
-          <Text flexShrink="0" fontSize="lg">デート一覧</Text>
-          <Separator flex="1" />
-        </HStack>
-      </Stack>
-      <Stack>
-        <SimpleGrid columns={[2, null, 3]}>
-          {meetings.map((meeting) => (
-            <Card.Root key={meeting.id} overflow="hidden" shadow="md" m={5} cursor="pointer"
-              onClick={() => navigate(`/meetings/${meeting.id}`)}>
-              <Card.Header>
-                <Heading size="lg" mb={2}>
-                  {meeting.title || 'タイトルなし'}
-                </Heading>
-              </Card.Header>
-              <Card.Body>
-                <Text mb={2}>{meeting.location}</Text>
-                <Text>{meeting.date}</Text>
-              </Card.Body>
-            </Card.Root>
-          ))}
-        </SimpleGrid>
-      </Stack>
+      </Box>
+
+      {/* Meeting Cards Grid */}
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          xs: 'repeat(2, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+        }}
+        gap={2}
+        mt={3}
+      >
+        {meetings.map((meeting) => (
+          <Card
+            key={meeting.id}
+            sx={{ m: 1, cursor: 'pointer' }}
+            onClick={() => navigate(`/meetings/${meeting.id}`)}
+          >
+            <CardHeader
+              title={meeting.title || 'タイトルなし'}
+              titleTypographyProps={{ variant: 'h6' }}
+            />
+            <CardContent>
+              <Typography variant="body1" gutterBottom>
+                {meeting.location}
+              </Typography>
+              <Typography variant="body2">{meeting.date}</Typography>
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
     </Box>
   );
 };

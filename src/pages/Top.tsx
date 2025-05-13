@@ -1,29 +1,50 @@
+import { Box, Stack, Button, Typography, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Heading, Stack } from '@chakra-ui/react';
 
 const Top = () => {
   const navigate = useNavigate();
 
   return (
-    <Box p={6} >
-      <Stack h="20vh" />
-      <Stack h="40vh" alignItems='center' justifyContent="center">
-        <Heading as="h1" fontSize="min(10vw, 30vh)" fontFamily="serif" mb={4}>
+    <Container sx={{ py: 6 }}>
+      <Box sx={{ height: '20vh' }} />
+      <Box
+        sx={{
+          height: '40vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          variant="h1"
+          sx={{
+            fontSize: 'min(10vw, 30vh)',
+            fontFamily: 'serif',
+            mb: 4,
+          }}
+        >
           Partner Reminder
-        </Heading>
-      </Stack>
-      <Stack h="40vh" alignItems='center'>
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          height: '40vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Button
-          minWidth="20vw"
+          variant="contained"
+          color="primary"
+          size="large"
+          sx={{ minWidth: '20vw' }}
           onClick={() => navigate('/meetings')}
-          colorScheme="blue"
-          size="lg"
-          variant="solid"
         >
           デート一覧を見る
         </Button>
-      </Stack>
-    </Box>
+      </Box>
+    </Container>
   );
 };
 
