@@ -14,10 +14,10 @@ import {
   interface AddDialogProps {
     open: boolean;
     onClose: () => void;
-    
+    onSaveSuccess: () => void;
   }
   
-  const AddDialog: React.FC<AddDialogProps> = ({ open, onClose}) => {
+  const AddDialog: React.FC<AddDialogProps> = ({ open, onClose,onSaveSuccess }) => {
     const [formData, setFormData] = useState<any>({
       title: '',
       location: '',
@@ -31,15 +31,23 @@ import {
     });
   
     const handleSave = async () => {
+      if (!formData.title || !formData.location || !formData.date) {
+        alert('タイトル、場所、日付は必須です');
+        return;
+      }
+  
       const res = await fetch('http://localhost:8000/meetings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+  
       if (res.ok) {
-        
         onClose();
+        onSaveSuccess();
       } else {
+        const err = await res.json();
+        console.error(err);
         alert('保存に失敗しました');
       }
     };
@@ -65,6 +73,7 @@ import {
           <Stack spacing={2}>
             <TextField
               label="タイトル"
+              required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               fullWidth
@@ -72,12 +81,16 @@ import {
             <Stack direction="row" spacing={2}>
               <TextField
                 label="場所"
+                required
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 fullWidth
               />
               <TextField
                 label="日付"
+                required
+                type="date"
+                InputLabelProps={{ shrink: true }}
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 fullWidth
@@ -117,14 +130,13 @@ import {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: '0 !important',
               }}
             >
               <Box
                 component="img"
                 src={
                   formData.my_appearance_image_path
-                    ? `http://localhost:8000/files/${formData.my_appearance_image_path.split('files/')[1]}`
+                    ? `http://localhost:8000/${formData.my_appearance_image_path}`
                     : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
                 }
                 alt="自分の服装"
@@ -175,7 +187,13 @@ import {
           <Button onClick={onClose} color="inherit" variant="text" size="large" sx={{ minWidth: 160, py: 1.2 }}>
             キャンセル
           </Button>
-          <Button variant="contained" color="inherit" size="large" onClick={handleSave} sx={{ minWidth: 160, py: 1.2 }}>
+          <Button
+            variant="contained"
+            color="inherit"
+            size="large"
+            onClick={handleSave}
+            sx={{ minWidth: 160, py: 1.2 }}
+          >
             追加
           </Button>
         </DialogActions>
@@ -184,4 +202,3 @@ import {
   };
   
   export default AddDialog;
-  

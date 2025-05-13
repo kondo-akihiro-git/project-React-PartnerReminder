@@ -14,6 +14,7 @@ import {
 import Header from '../components/Header';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import AddDialog from '../components/AddDialog';
+import SnackbarNotification from '../components/SnackbarNotification';
 
 
 interface Meeting {
@@ -30,23 +31,27 @@ const MeetingList = () => {
   const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
 
+  const fetchMeetings = async () => {
+    const res = await fetch('http://localhost:8000/meetings');
+    const data = await res.json();
+    const formatted = data.meetings.map((m: any[]) => ({
+      id: m[0],
+      title: m[1],
+      location: m[2],
+      date: m[3],
+      image: m[4],
+    }));
+    formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    setMeetings(formatted);
+  };
+  
   useEffect(() => {
-    fetch('http://localhost:8000/meetings')
-      .then((res) => res.json())
-      .then((data) => {
-        const formatted = data.meetings.map((m: any[]) => ({
-          id: m[0],
-          title: m[1],
-          location: m[2],
-          date: m[3],
-          image: m[4],
-        }));
-        formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setMeetings(formatted);
-      });
+    fetchMeetings();
   }, []);
+  
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -91,7 +96,15 @@ const MeetingList = () => {
         {meetings.map((meeting) => (
           <Card
             key={meeting.id}
-            sx={{ m: 1, cursor: 'pointer' }}
+            sx={{
+              m: 1,
+              cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              '&:hover': {
+                transform: 'scale(1.03)',
+                boxShadow: 6,
+              },
+            }}
             onClick={() => navigate(`/meetings/${meeting.id}`)}
           >
             <CardHeader
@@ -119,8 +132,13 @@ const MeetingList = () => {
 <AddDialog
   open={openAddDialog}
   onClose={() => setOpenAddDialog(false)}
-  
+  onSaveSuccess={() => {
+    fetchMeetings();
+    setSnackbarOpen(true);
+    setOpenAddDialog(false);
+  }}
 />
+<SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
 
 
     </Box>
