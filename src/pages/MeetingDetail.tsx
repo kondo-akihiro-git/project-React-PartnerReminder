@@ -186,7 +186,11 @@ const MeetingDetail = () => {
               >
                 <Box
                   component="img"
-                  src={`http://localhost:8000/files/${meeting.my_appearance_image_path.split('files/')[1]}`}
+                  src={
+                    meeting.my_appearance_image_path
+                      ? `http://localhost:8000/files/${meeting.my_appearance_image_path.split('files/')[1]}`
+                      : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  }
                   alt="自分の服装"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

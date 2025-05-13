@@ -15,7 +15,7 @@ import Header from '../components/Header';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import AddDialog from '../components/AddDialog';
 import SnackbarNotification from '../components/SnackbarNotification';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Meeting {
   id: number;
@@ -32,7 +32,8 @@ const MeetingList = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+  const [isDeleteMode, setIsDeleteMode] = useState(false);  // 削除モード
+  const [selectedMeetings, setSelectedMeetings] = useState<number[]>([]);  // 選択されたMeetingのIDを管理
 
   const fetchMeetings = async () => {
     const res = await fetch('http://localhost:8000/meetings');
@@ -47,11 +48,10 @@ const MeetingList = () => {
     formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
     setMeetings(formatted);
   };
-  
+
   useEffect(() => {
     fetchMeetings();
   }, []);
-  
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -63,6 +63,40 @@ const MeetingList = () => {
     setAnchorEl(null);
   };
 
+  const handleDeleteClick = () => {
+    setIsDeleteMode(true);
+  };
+
+  const handleCardClick = (id: number) => {
+    if (isDeleteMode) {
+      setSelectedMeetings((prevSelected) =>
+        prevSelected.includes(id)
+          ? prevSelected.filter((meetingId) => meetingId !== id)
+          : [...prevSelected, id]
+      );
+    } else {
+      navigate(`/meetings/${id}`);
+    }
+  };
+
+  const handleDeleteExecute = async () => {
+    // ここで削除リクエストを実行
+    await fetch('http://localhost:8000/meetings/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: selectedMeetings }),
+    });
+    // 削除後の処理
+    setIsDeleteMode(false);
+    setSelectedMeetings([]);
+    fetchMeetings();
+  };
+
+  const handleCancelDeleteMode = () => {
+    setIsDeleteMode(false);
+    setSelectedMeetings([]);
+  };
+
   return (
     <Box p={4}>
       {/* Header */}
@@ -70,14 +104,16 @@ const MeetingList = () => {
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
-        handleUserSettings={() => {}}
-        handleLogout={() => {}}
+        handleUserSettings={() => { }}
+        handleLogout={() => { }}
         anchorEl={anchorEl}
       />
       <Box my={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Divider sx={{ flex: 1 }} />
-          <Typography variant="h6" noWrap>デート詳細</Typography>
+          <Typography variant="h6" noWrap>
+            デート詳細
+          </Typography>
           <Divider sx={{ flex: 1 }} />
         </Stack>
       </Box>
@@ -93,54 +129,113 @@ const MeetingList = () => {
         gap={2}
         mt={3}
       >
-        {meetings.map((meeting) => (
-          <Card
-            key={meeting.id}
-            sx={{
-              m: 1,
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                transform: 'scale(1.03)',
-                boxShadow: 6,
-              },
-            }}
-            onClick={() => navigate(`/meetings/${meeting.id}`)}
-          >
-            <CardHeader
-              title={meeting.title || 'タイトルなし'}
-              titleTypographyProps={{ variant: 'h6' }}
-            />
-            <CardContent>
-              <Typography variant="body1" gutterBottom>
-                {meeting.location}
-              </Typography>
-              <Typography variant="body2">{meeting.date}</Typography>
-            </CardContent>
-          </Card>
-        ))}
+        {meetings.map((meeting) => {
+          const selectedIndex = selectedMeetings.indexOf(meeting.id);
+          return (
+            <Box key={meeting.id} position="relative">
+              <Card
+                sx={{
+                  m: 1,
+                  cursor: isDeleteMode ? 'pointer' : 'default',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
+                  backgroundColor: selectedMeetings.includes(meeting.id)
+                    ? 'rgba(0, 0, 0, 0.1)'
+                    : 'transparent',
+                }}
+                onClick={() => handleCardClick(meeting.id)}
+              >
+                <CardHeader title={meeting.title || 'タイトルなし'} titleTypographyProps={{ variant: 'h6' }} />
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    {meeting.location}
+                  </Typography>
+                  <Typography variant="body2">{meeting.date}</Typography>
+                </CardContent>
+              </Card>
+
+              {isDeleteMode && selectedIndex !== -1 && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: -10,
+                    right: -10,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    backgroundColor: 'gray',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '0.875rem',
+                    zIndex: 10,
+                    boxShadow: 3,
+                  }}
+                >
+                  {selectedIndex + 1}
+                </Box>
+              )}
+            </Box>
+          );
+        })}
+
       </Box>
+
+      {/* Floating Action Buttons */}
       <Fab
-  color="inherit"
-  sx={{ position: 'fixed', bottom: 20, right: 20 }}
-  variant="extended"
-  onClick={() => setOpenAddDialog(true)}
->
-  <AddIcon sx={{ mr: 1 }} />
-  追加
-</Fab>
-<AddDialog
-  open={openAddDialog}
-  onClose={() => setOpenAddDialog(false)}
-  onSaveSuccess={() => {
-    fetchMeetings();
-    setSnackbarOpen(true);
-    setOpenAddDialog(false);
-  }}
-/>
-<SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+        color="inherit"
+        sx={{ position: 'fixed', bottom: 20, right: 20 }}
+        variant="extended"
+        onClick={() => setOpenAddDialog(true)}
+      >
+        <AddIcon sx={{ mr: 1 }} />
+        追加
+      </Fab>
 
+      <Fab
+        color="inherit"
+        sx={{ position: 'fixed', bottom: 90, right: 20 }}
+        variant="extended"
+        onClick={handleDeleteClick}
+      >
+        <DeleteIcon sx={{ mr: 1 }} />
+        削除
+      </Fab>
 
+      {isDeleteMode && (
+        <>
+          <Fab
+            color="inherit"
+            sx={{ position: 'fixed', bottom: 150, right: 20 }}
+            variant="extended"
+            onClick={handleDeleteExecute}
+          >
+            削除実行
+          </Fab>
+
+          <Fab
+            color="inherit"
+            sx={{ position: 'fixed', bottom: 220, right: 20 }}
+            variant="extended"
+            onClick={handleCancelDeleteMode}
+          >
+            モード解除
+          </Fab>
+        </>
+      )}
+
+      <AddDialog
+        open={openAddDialog}
+        onClose={() => setOpenAddDialog(false)}
+        onSaveSuccess={() => {
+          fetchMeetings();
+          setSnackbarOpen(true);
+          setOpenAddDialog(false);
+        }}
+      />
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
     </Box>
   );
 };
