@@ -1,6 +1,7 @@
 import { Stack, Button, Menu, MenuItem, ButtonBase, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   handleMenuClick: (event: React.MouseEvent<HTMLElement>) => void;
@@ -11,12 +12,13 @@ interface HeaderProps {
   anchorEl: HTMLElement | null;
 }
 
+
 const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuOpen, handleUserSettings, handleLogout, anchorEl }) => {
-  
+  const navigate = useNavigate();
     return(
   <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
     <ButtonBase>
-      <Typography variant="h4" sx={{ fontFamily: 'serif' }}>
+      <Typography variant="h4" sx={{ fontFamily: 'serif' }} onClick={() => navigate('/')}>
         PartnerReminder
       </Typography>
     </ButtonBase>
