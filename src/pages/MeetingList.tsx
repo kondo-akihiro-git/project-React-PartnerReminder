@@ -9,8 +9,12 @@ import {
   Card,
   CardHeader,
   CardContent,
+  Fab,
 } from '@mui/material';
 import Header from '../components/Header';
+import AddIcon from '@mui/icons-material/AddCircleOutline';
+import AddDialog from '../components/AddDialog';
+
 
 interface Meeting {
   id: number;
@@ -25,6 +29,8 @@ const MeetingList = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+
 
   useEffect(() => {
     fetch('http://localhost:8000/meetings')
@@ -101,6 +107,22 @@ const MeetingList = () => {
           </Card>
         ))}
       </Box>
+      <Fab
+  color="inherit"
+  sx={{ position: 'fixed', bottom: 20, right: 20 }}
+  variant="extended"
+  onClick={() => setOpenAddDialog(true)}
+>
+  <AddIcon sx={{ mr: 1 }} />
+  追加
+</Fab>
+<AddDialog
+  open={openAddDialog}
+  onClose={() => setOpenAddDialog(false)}
+  
+/>
+
+
     </Box>
   );
 };
