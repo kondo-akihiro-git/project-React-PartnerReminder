@@ -32,6 +32,7 @@ const MeetingList = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isDeleteMode, setIsDeleteMode] = useState(false);  // 削除モード
   const [selectedMeetings, setSelectedMeetings] = useState<number[]>([]);  // 選択されたMeetingのIDを管理
 
@@ -64,6 +65,8 @@ const MeetingList = () => {
   };
 
   const handleDeleteClick = () => {
+    setSnackbarMessage('削除対象を選択してください');
+    setSnackbarOpen(true);
     setIsDeleteMode(true);
   };
 
@@ -80,16 +83,27 @@ const MeetingList = () => {
   };
 
   const handleDeleteExecute = async () => {
-    // ここで削除リクエストを実行
-    await fetch('http://localhost:8000/meetings/delete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: selectedMeetings }),
-    });
-    // 削除後の処理
-    setIsDeleteMode(false);
-    setSelectedMeetings([]);
-    fetchMeetings();
+    try {
+      const response = await fetch('http://localhost:8000/meetings/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedMeetings }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('削除に失敗しました');
+      }
+  
+      setSnackbarMessage('削除に成功しました');
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbarMessage('削除中にエラーが発生しました');
+      setSnackbarOpen(true);
+    } finally {
+      setIsDeleteMode(false);
+      setSelectedMeetings([]);
+      fetchMeetings();
+    }
   };
 
   const handleCancelDeleteMode = () => {
@@ -112,7 +126,7 @@ const MeetingList = () => {
         <Stack direction="row" alignItems="center" spacing={2}>
           <Divider sx={{ flex: 1 }} />
           <Typography variant="h6" noWrap>
-            デート詳細
+            デート一覧
           </Typography>
           <Divider sx={{ flex: 1 }} />
         </Stack>
@@ -183,32 +197,36 @@ const MeetingList = () => {
 
       </Box>
 
-      {/* Floating Action Buttons */}
+      {!isDeleteMode && (
+                <>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 20, right: 20 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
         variant="extended"
         onClick={() => setOpenAddDialog(true)}
       >
         <AddIcon sx={{ mr: 1 }} />
         追加
       </Fab>
+      
 
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 90, right: 20 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
         variant="extended"
         onClick={handleDeleteClick}
       >
         <DeleteIcon sx={{ mr: 1 }} />
         削除
       </Fab>
+      </>
+            )}
 
       {isDeleteMode && (
         <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 150, right: 20 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
             variant="extended"
             onClick={handleDeleteExecute}
           >
@@ -217,11 +235,11 @@ const MeetingList = () => {
 
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 220, right: 20 }}
+            sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
             variant="extended"
             onClick={handleCancelDeleteMode}
           >
-            モード解除
+            削除モード解除
           </Fab>
         </>
       )}
@@ -231,11 +249,12 @@ const MeetingList = () => {
         onClose={() => setOpenAddDialog(false)}
         onSaveSuccess={() => {
           fetchMeetings();
+          setSnackbarMessage("追加できました")
           setSnackbarOpen(true);
           setOpenAddDialog(false);
         }}
       />
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage}/>
     </Box>
   );
 };

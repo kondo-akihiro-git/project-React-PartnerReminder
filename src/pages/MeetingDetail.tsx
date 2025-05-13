@@ -36,8 +36,16 @@ const MeetingDetail = () => {
     }).then(() => {
       setSnackbarOpen(true);
       setOpenEditDialog(false);
+  
+      // 🔄 更新後のデータを再取得
+      fetch(`http://localhost:8000/meetings/${meetingId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setMeeting(data.meeting);
+        });
     });
   };
+  
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -246,7 +254,7 @@ const MeetingDetail = () => {
       </Card>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 20, right: 20 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >
@@ -255,7 +263,7 @@ const MeetingDetail = () => {
       </Fab>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 90, right: 20 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
         variant="extended"
         onClick={() => {
           setEditData(meeting);
@@ -274,7 +282,7 @@ const MeetingDetail = () => {
         onSave={handleSave}
       />
 
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message="更新できました" />
     </Box>
   );
 };
