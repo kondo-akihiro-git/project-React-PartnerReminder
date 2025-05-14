@@ -292,7 +292,7 @@ const MeetingDetail = () => {
         onSave={handleSave}
       />
 
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message="更新できました" />
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message="更新できました" severity='success' />
     </Box>
   );
 };

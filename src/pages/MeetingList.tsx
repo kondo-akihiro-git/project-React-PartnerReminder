@@ -36,6 +36,9 @@ const MeetingList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isDeleteMode, setIsDeleteMode] = useState(false);  // 削除モード
   const [selectedMeetings, setSelectedMeetings] = useState<number[]>([]);  // 選択されたMeetingのIDを管理
+  // MeetingList.tsx の useState に追加
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('info');
+
 
   const fetchMeetings = async () => {
     const res = await fetch('http://localhost:8000/meetings');
@@ -67,6 +70,7 @@ const MeetingList = () => {
 
   const handleDeleteClick = () => {
     setSnackbarMessage('削除対象を選択してください');
+    setSnackbarSeverity('info');
     setSnackbarOpen(true);
     setIsDeleteMode(true);
   };
@@ -96,9 +100,11 @@ const MeetingList = () => {
       }
   
       setSnackbarMessage('削除に成功しました');
+      setSnackbarSeverity('success'); 
       setSnackbarOpen(true);
     } catch (error) {
       setSnackbarMessage('削除中にエラーが発生しました');
+      setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {
       setIsDeleteMode(false);
@@ -233,26 +239,30 @@ const MeetingList = () => {
       </>
             )}
 
-      {isDeleteMode && (
-        <>
+      {isDeleteMode && selectedMeetings.length > 0 &&(
+        
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
+            sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
             variant="extended"
             onClick={handleDeleteExecute}
           >
             削除実行
           </Fab>
 
+      )}
+
+{isDeleteMode && (
+
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
             variant="extended"
             onClick={handleCancelDeleteMode}
           >
             削除モード解除
           </Fab>
-        </>
+        
       )}
 
       <AddDialog
@@ -261,11 +271,12 @@ const MeetingList = () => {
         onSaveSuccess={() => {
           fetchMeetings();
           setSnackbarMessage("追加できました")
+          setSnackbarSeverity('success');
           setSnackbarOpen(true);
           setOpenAddDialog(false);
         }}
       />
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage}/>
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} severity={snackbarSeverity}/>
     </Box>
   );
 };
