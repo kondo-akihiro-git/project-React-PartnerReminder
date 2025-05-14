@@ -93,29 +93,44 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             />
           </Box>
 
-          <Button variant="outlined" component="label" color='inherit'>
-            自分の服装の画像を変更する
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const formData = new FormData();
-                  formData.append('file', file);
-                  fetch(`http://localhost:8000/upload-image`, {
-                    method: 'POST',
-                    body: formData,
-                  })
-                    .then((res) => res.json())
-                    .then((data) => {
-                      setEditData({ ...editData, my_appearance_image_path: data.filename });
-                    });
-                }
-              }}
-            />
-          </Button>
+          <Stack direction="row">
+            <Box sx={{ flex: 5 }}>
+              <Button variant="outlined" component="label" color='inherit' fullWidth>
+                自分の服装の画像を変更する
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      fetch(`http://localhost:8000/upload-image`, {
+                        method: 'POST',
+                        body: formData,
+                      })
+                        .then((res) => res.json())
+                        .then((data) => {
+                          setEditData({ ...editData, my_appearance_image_path: data.filename });
+                        });
+                    }
+                  }}
+                />
+              </Button>
+            </Box>
+            <Box sx={{ flex: 1, ml: 1 }}>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => setEditData({ ...editData, my_appearance_image_path: '' })}
+                fullWidth
+              >
+                画像をクリア
+              </Button>
+            </Box>
+          </Stack>
+
 
           <TextField
             label="相手の良いところ"
@@ -155,7 +170,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                   ? `http://localhost:8000/files/${editData.meeting_photo.split('files/')[1]}`
                   : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
               }
-              alt="自分の服装"
+              alt="デートの背景画像"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
@@ -170,38 +185,56 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             />
           </Box>
 
-          <Button variant="outlined" component="label" color='inherit'>
-            デートの背景画像を変更する
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const formData = new FormData();
-                  formData.append('file', file);
-                  fetch(`http://localhost:8000/upload-image`, {
-                    method: 'POST',
-                    body: formData,
-                  })
-                    .then((res) => res.json())
-                    .then((data) => {
-                      setEditData({ ...editData, meeting_photo: data.filename });
-                    });
-                }
-              }}
-            />
-          </Button>
+          <Stack direction="row">
+            <Box sx={{ flex: 5 }}>
+
+              <Button variant="outlined" component="label" color='inherit' fullWidth>
+                デートの背景画像を変更する
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      fetch(`http://localhost:8000/upload-image`, {
+                        method: 'POST',
+                        body: formData,
+                      })
+                        .then((res) => res.json())
+                        .then((data) => {
+                          setEditData({ ...editData, meeting_photo: data.filename });
+                        });
+                    }
+                  }}
+                />
+              </Button>
+
+            </Box>
+            <Box sx={{ flex: 1, ml: 1 }}>
+
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => setEditData({ ...editData, meeting_photo: '' })}
+                fullWidth
+              >
+                画像をクリア
+              </Button>
+
+            </Box>
+          </Stack>
 
 
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 4, py: 3, justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onClose} color="inherit" variant="text" size="large"sx={{ minWidth: 160, py: 1.2 }}>
+        <Button onClick={onClose} color="inherit" variant="text" size="large" sx={{ minWidth: 160, py: 1.2 }}>
           キャンセル
         </Button>
-        <Button variant="contained" color="inherit" size="large" onClick={onSave}sx={{ minWidth: 160, py: 1.2 }}>
+        <Button variant="contained" color="inherit" size="large" onClick={onSave} sx={{ minWidth: 160, py: 1.2 }}>
           更新
         </Button>
       </DialogActions>
