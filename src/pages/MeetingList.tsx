@@ -213,7 +213,7 @@ const MeetingList = () => {
                     backgroundImage: `url(${imageUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    opacity: 0.2,
+                    opacity: 0.4,
                     zIndex: 0,
                   },
                   // 前面テキストを上に表示するためにzIndexを上げる
@@ -224,15 +224,58 @@ const MeetingList = () => {
                 }}
                 onClick={() => handleCardClick(meeting.id)}
               >
-                <Box m={2}>
-                  <CardHeader title={meeting.title || 'タイトルなし'} titleTypographyProps={{ variant: 'h5', fontWeight: 'medium' }} />
-                  <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                      {meeting.location}
+                <Box m={5}>
+                  {/* タイトル */}
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      fontWeight="medium"
+                      sx={{
+                        background: "white",
+                        display: "inline",
+                        px: 0.5,
+                        borderRadius: 1,
+
+                      }}
+                    >
+                      {meeting.title || 'タイトルなし'}
                     </Typography>
-                    <Typography variant="body2">{meeting.date}</Typography>
+                  </Box>
+
+                  <CardContent sx={{ pl: 0 }}>
+                    {/* 場所 */}
+                    <Box mt={1}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          background: "white",
+                          display: "inline",
+                          px: 0.5,
+                          borderRadius: 1,
+                        }}
+                      >
+                        {meeting.location}
+                      </Typography>
+                    </Box>
+
+                    {/* 日付 */}
+                    <Box mt={1}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          background: "white",
+                          display: "inline",
+                          px: 0.5,
+                          borderRadius: 1,
+                        }}
+                      >
+                        {meeting.date}
+                      </Typography>
+                    </Box>
                   </CardContent>
                 </Box>
+
+
               </Card>
 
               {isDeleteMode && selectedIndex !== -1 && (
