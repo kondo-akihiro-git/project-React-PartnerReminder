@@ -26,6 +26,7 @@ import {
       talked_topics: '',
       partner_appearances: '',
       my_appearance_image_path: '',
+      meeting_photo: '',
       partner_good_points: '',
       todo_for_next: '',
     });
@@ -52,7 +53,7 @@ import {
       }
     };
   
-    const handleImageUpload = async (file: File) => {
+    const handleMyImageUpload = async (file: File) => {
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch(`http://localhost:8000/upload-image`, {
@@ -63,6 +64,20 @@ import {
       setFormData((prev: any) => ({
         ...prev,
         my_appearance_image_path: data.filename,
+      }));
+    };
+
+    const handleBackImageUpload = async (file: File) => {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`http://localhost:8000/upload-image`, {
+        method: 'POST',
+        body: fd,
+      });
+      const data = await res.json();
+      setFormData((prev: any) => ({
+        ...prev,
+        meeting_photo: data.filename,
       }));
     };
   
@@ -162,7 +177,7 @@ import {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    handleImageUpload(file);
+                    handleMyImageUpload(file);
                   }
                 }}
               />
@@ -181,6 +196,58 @@ import {
               fullWidth
               multiline
             />
+
+            <Typography variant="caption">自分の服装</Typography>
+            <Box
+              sx={{
+                width: '100%',
+                height: 300,
+                overflow: 'hidden',
+                border: '1px solid #ccc',
+                borderRadius: 2,
+                padding: 1,
+                backgroundColor: '#fafafa',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                component="img"
+                src={
+                  formData.meeting_photo
+                    ? `http://localhost:8000/${formData.meeting_photo}`
+                    : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                }
+                alt="自分の服装"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                }}
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: 2,
+                }}
+              />
+            </Box>
+            <Button variant="outlined" component="label" color="inherit">
+              自分の服装の画像をアップロード
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleBackImageUpload(file);
+                  }
+                }}
+              />
+            </Button>
+
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 4, py: 3, justifyContent: 'flex-end', gap: 2 }}>

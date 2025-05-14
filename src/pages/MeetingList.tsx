@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import SearchBar from '../components/SearchBar';
 import { useMemo } from 'react';
+import { kMaxLength } from 'buffer';
 
 interface Meeting {
   id: number;
@@ -42,10 +43,10 @@ const MeetingList = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('info');
 
   const [filters, setFilters] = useState({
-  title: '',
-  location: '',
-  date: '',
-});
+    title: '',
+    location: '',
+    date: '',
+  });
 
 
   const fetchMeetings = async () => {
@@ -102,13 +103,13 @@ const MeetingList = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedMeetings }),
       });
-  
+
       if (!response.ok) {
         throw new Error('削除に失敗しました');
       }
-  
+
       setSnackbarMessage('削除に成功しました');
-      setSnackbarSeverity('success'); 
+      setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
       setSnackbarMessage('削除中にエラーが発生しました');
@@ -127,24 +128,24 @@ const MeetingList = () => {
   };
 
   const handleFilterChange = (field: string, value: string) => {
-  setFilters((prev) => ({ ...prev, [field]: value }));
-};
-const handleClear = () => {
-  setFilters({
-    title: '',
-    location: '',
-    date: '',
-  });
-};
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleClear = () => {
+    setFilters({
+      title: '',
+      location: '',
+      date: '',
+    });
+  };
 
-const filteredMeetings = useMemo(() => {
-  return meetings.filter((m) => {
-    const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
-    const matchLocation = m.location.toLowerCase().includes(filters.location.toLowerCase());
-    const matchDate = filters.date ? m.date.startsWith(filters.date) : true;
-    return matchTitle && matchLocation && matchDate;
-  });
-}, [meetings, filters]);
+  const filteredMeetings = useMemo(() => {
+    return meetings.filter((m) => {
+      const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
+      const matchLocation = m.location.toLowerCase().includes(filters.location.toLowerCase());
+      const matchDate = filters.date ? m.date.startsWith(filters.date) : true;
+      return matchTitle && matchLocation && matchDate;
+    });
+  }, [meetings, filters]);
 
 
   return (
@@ -183,27 +184,55 @@ const filteredMeetings = useMemo(() => {
       >
         {filteredMeetings.map((meeting) => {
           const selectedIndex = selectedMeetings.indexOf(meeting.id);
+          const imageUrl = meeting.image
+            ? `http://localhost:8000/${meeting.image}`
+            : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+
           return (
             <Box key={meeting.id} position="relative">
               <Card
                 sx={{
                   m: 1,
+                  height: 200,
                   cursor: isDeleteMode ? 'pointer' : 'default',
                   transition: 'transform 0.2s, box-shadow 0.2s',
                   '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
                   backgroundColor: selectedMeetings.includes(meeting.id)
                     ? 'rgba(0, 0, 0, 0.1)'
                     : 'transparent',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  // 背景画像（擬似要素）
+                  '::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundImage: `url(${imageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.2,
+                    zIndex: 0,
+                  },
+                  // 前面テキストを上に表示するためにzIndexを上げる
+                  '& > *': {
+                    position: 'relative',
+                    zIndex: 1,
+                  },
                 }}
                 onClick={() => handleCardClick(meeting.id)}
               >
-                <CardHeader title={meeting.title || 'タイトルなし'} titleTypographyProps={{ variant: 'h6' }} />
-                <CardContent>
-                  <Typography variant="body1" gutterBottom>
-                    {meeting.location}
-                  </Typography>
-                  <Typography variant="body2">{meeting.date}</Typography>
-                </CardContent>
+                <Box m={2}>
+                  <CardHeader title={meeting.title || 'タイトルなし'} titleTypographyProps={{ variant: 'h5', fontWeight: 'medium' }} />
+                  <CardContent>
+                    <Typography variant="body1" gutterBottom>
+                      {meeting.location}
+                    </Typography>
+                    <Typography variant="body2">{meeting.date}</Typography>
+                  </CardContent>
+                </Box>
               </Card>
 
               {isDeleteMode && selectedIndex !== -1 && (
@@ -236,64 +265,64 @@ const filteredMeetings = useMemo(() => {
       </Box>
 
       {!isDeleteMode && (
-                <>
-      <Fab
-        color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
-        variant="extended"
-        onClick={() => setOpenAddDialog(true)}
-      >
-        <AddIcon sx={{ mr: 1 }} />
-        デート追加
-      </Fab>
-      
-
-      <Fab
-        color="inherit"
-        sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
-        variant="extended"
-        onClick={handleDeleteClick}
-      >
-        <DeleteIcon sx={{ mr: 1 }} />
-        デート削除
-      </Fab>
-
-      <Fab
-        color="inherit"
-        sx={{ position: 'fixed', bottom: 180, right: 20, width:200 }}
-        variant="extended"
-        onClick={() => navigate('/goodpoints')}
-      >
-        <ThumbUpOffAltIcon sx={{ mr: 1 }} />
-        良いところ一覧
-      </Fab>
-      </>
-            )}
-
-      {isDeleteMode && selectedMeetings.length > 0 &&(
-        
+        <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
             variant="extended"
-            onClick={handleDeleteExecute}
+            onClick={() => setOpenAddDialog(true)}
           >
-            削除実行
+            <AddIcon sx={{ mr: 1 }} />
+            デート追加
           </Fab>
+
+
+          <Fab
+            color="inherit"
+            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
+            variant="extended"
+            onClick={handleDeleteClick}
+          >
+            <DeleteIcon sx={{ mr: 1 }} />
+            デート削除
+          </Fab>
+
+          <Fab
+            color="inherit"
+            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200 }}
+            variant="extended"
+            onClick={() => navigate('/goodpoints')}
+          >
+            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+            良いところ一覧
+          </Fab>
+        </>
+      )}
+
+      {isDeleteMode && selectedMeetings.length > 0 && (
+
+        <Fab
+          color="inherit"
+          sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
+          variant="extended"
+          onClick={handleDeleteExecute}
+        >
+          削除実行
+        </Fab>
 
       )}
 
-{isDeleteMode && (
+      {isDeleteMode && (
 
-          <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
-            variant="extended"
-            onClick={handleCancelDeleteMode}
-          >
-            削除モード解除
-          </Fab>
-        
+        <Fab
+          color="inherit"
+          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+          variant="extended"
+          onClick={handleCancelDeleteMode}
+        >
+          削除モード解除
+        </Fab>
+
       )}
 
       <AddDialog
@@ -307,7 +336,7 @@ const filteredMeetings = useMemo(() => {
           setOpenAddDialog(false);
         }}
       />
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} severity={snackbarSeverity}/>
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} severity={snackbarSeverity} />
     </Box>
   );
 };
