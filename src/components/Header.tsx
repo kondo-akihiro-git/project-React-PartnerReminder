@@ -1,4 +1,4 @@
-import { Stack, Button, Menu, MenuItem, ButtonBase, Typography } from '@mui/material';
+import { Stack, Button, Menu, MenuItem, ButtonBase, Typography, Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,10 +18,19 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
       <ButtonBase onClick={() => navigate('/')}>
-        <img
+        <Box
+          component="img"
           src={`${process.env.PUBLIC_URL}/images/pr_title.png`}
           alt="PartnerReminder"
-          style={{ width: '30vw', objectFit: 'contain' }}
+          sx={{
+            width: {
+              xs: '45vw', // スマホなどの狭い画面：80vw
+              sm: '40vw', // タブレット程度：60vw
+              md: '35vw', // 中サイズ以上：40vw
+              lg: '30vw', // 広い画面：30vw
+            },
+            objectFit: 'contain',
+          }}
         />
       </ButtonBase>
       <Stack direction="column" spacing={1} sx={{ flexBasis: '30%' }} alignItems="flex-end">
@@ -29,7 +38,12 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           variant='outlined'
           onClick={handleMenuClick}
           sx={{
-            width: '20vw',   // 最小幅を20%に
+            width: {
+              xs: '26vw', // スマホなどの狭い画面：80vw
+              sm: '24vw', // タブレット程度：60vw
+              md: '22vw', // 中サイズ以上：40vw
+              lg: '20vw', // 広い画面：30vw
+            },
 
             textTransform: 'none',
 
@@ -46,8 +60,12 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           onClose={handleMenuClose}
           PaperProps={{
             sx: {
-              width: '20vw',   // 最小幅を20%に
-              // メニュー内のフォントサイズも調整
+              width: {
+                xs: '26vw', // スマホなどの狭い画面：80vw
+                sm: '24vw', // タブレット程度：60vw
+                md: '22vw', // 中サイズ以上：40vw
+                lg: '20vw', // 広い画面：30vw
+              },
             },
           }}
         >
