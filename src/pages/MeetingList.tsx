@@ -213,7 +213,7 @@ const MeetingList = () => {
                     backgroundImage: `url(${imageUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    opacity: 0.4,
+                    opacity: 0.6,
                     zIndex: 0,
                   },
                   // 前面テキストを上に表示するためにzIndexを上げる
@@ -224,22 +224,31 @@ const MeetingList = () => {
                 }}
                 onClick={() => handleCardClick(meeting.id)}
               >
-                <Box m={5}>
+                <Box
+  m={{
+    xs: 4, // スマホなどの小さい画面
+    sm: 4, // タブレットなどの中サイズ
+    md: 6, // デスクトップなどの通常サイズ以上
+  }}
+>
                   {/* タイトル */}
                   <Box>
-                    <Typography
-                      variant="h5"
-                      fontWeight="medium"
-                      sx={{
-                        background: "white",
-                        display: "inline",
-                        px: 0.5,
-                        borderRadius: 1,
+<Typography
+  
+  fontWeight="bold"
+  sx={{
 
-                      }}
-                    >
-                      {meeting.title || 'タイトルなし'}
-                    </Typography>
+        fontSize: {
+      xs: '1.2rem', // スマホ
+      sm: '1.3rem', // タブレット
+      md: '1.4em',   // 通常画面
+    },
+    color: "white",
+    textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
+  }}
+>
+  {meeting.title || 'タイトルなし'}
+</Typography>
                   </Box>
 
                   <CardContent sx={{ pl: 0 }}>
@@ -247,11 +256,10 @@ const MeetingList = () => {
                     <Box mt={1}>
                       <Typography
                         variant="body1"
+                        fontWeight="bold"
                         sx={{
-                          background: "white",
-                          display: "inline",
-                          px: 0.5,
-                          borderRadius: 1,
+                          color: "white",
+                          textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
                         }}
                       >
                         {meeting.location}
@@ -259,14 +267,13 @@ const MeetingList = () => {
                     </Box>
 
                     {/* 日付 */}
-                    <Box mt={1}>
+                    <Box mt={0.1}>
                       <Typography
                         variant="body2"
+                        fontWeight="bold"
                         sx={{
-                          background: "white",
-                          display: "inline",
-                          px: 0.5,
-                          borderRadius: 1,
+                          color: "white",
+                          textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
                         }}
                       >
                         {meeting.date}
