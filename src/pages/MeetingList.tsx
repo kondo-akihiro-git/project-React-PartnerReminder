@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/AddCircleOutline';
 import AddDialog from '../components/AddDialog';
 import SnackbarNotification from '../components/SnackbarNotification';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 interface Meeting {
   id: number;
@@ -201,23 +202,33 @@ const MeetingList = () => {
                 <>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
         variant="extended"
         onClick={() => setOpenAddDialog(true)}
       >
         <AddIcon sx={{ mr: 1 }} />
-        追加
+        デート追加
       </Fab>
       
 
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
         variant="extended"
         onClick={handleDeleteClick}
       >
         <DeleteIcon sx={{ mr: 1 }} />
-        削除
+        デート削除
+      </Fab>
+
+      <Fab
+        color="inherit"
+        sx={{ position: 'fixed', bottom: 180, right: 20, width:200 }}
+        variant="extended"
+        onClick={() => navigate('/goodpoints')}
+      >
+        <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+        良いところ一覧
       </Fab>
       </>
             )}
@@ -226,7 +237,7 @@ const MeetingList = () => {
         <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
             variant="extended"
             onClick={handleDeleteExecute}
           >
@@ -235,7 +246,7 @@ const MeetingList = () => {
 
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
+            sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
             variant="extended"
             onClick={handleCancelDeleteMode}
           >

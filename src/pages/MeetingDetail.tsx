@@ -7,6 +7,7 @@ import EditMeetingDialog from '../components/Dialog';
 import Header from '../components/Header';
 import LoadingIndicator from '../components/LoadingIndicator';
 import SnackbarNotification from '../components/SnackbarNotification';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const MeetingDetail = () => {
   const navigate = useNavigate();
@@ -254,16 +255,16 @@ const MeetingDetail = () => {
       </Card>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width:150 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >
         <ListIcon sx={{ mr: 1 }} />
-        一覧
+        デート一覧
       </Fab>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 110, right: 20, width:150 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
         variant="extended"
         onClick={() => {
           setEditData(meeting);
@@ -271,8 +272,17 @@ const MeetingDetail = () => {
         }}
       >
         <EditIcon sx={{ mr: 1 }} />
-        編集
+        デート編集
       </Fab>
+            <Fab
+              color="inherit"
+              sx={{ position: 'fixed', bottom: 180, right: 20, width:200 }}
+              variant="extended"
+              onClick={() => navigate('/goodpoints')}
+            >
+              <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+              良いところ一覧
+            </Fab>
 
       <EditMeetingDialog
         open={openEditDialog}
