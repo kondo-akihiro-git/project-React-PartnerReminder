@@ -36,21 +36,21 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
           </Stack>
           <TextField
             label="イベント"
-            value={editData?.event_names.replace(/\\n/g, '\n')}
+            value={editData?.event_names}
             onChange={(e) => setEditData({ ...editData, event_names: e.target.value })}
             fullWidth
             multiline
           />
           <TextField
             label="話した話題"
-            value={editData?.talked_topics.replace(/\\n/g, '\n')}
+            value={editData?.talked_topics}
             onChange={(e) => setEditData({ ...editData, talked_topics: e.target.value })}
             fullWidth
             multiline
           />
           <TextField
             label="彼女の服装"
-            value={editData?.partner_appearances.replace(/\\n/g, '\n')}
+            value={editData?.partner_appearances}
             onChange={(e) => setEditData({ ...editData, partner_appearances: e.target.value })}
             fullWidth
             multiline
@@ -119,14 +119,14 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
 
           <TextField
             label="相手の良いところ"
-            value={editData?.partner_good_points.replace(/\\n/g, '\n')}
+            value={editData?.partner_good_points}
             onChange={(e) => setEditData({ ...editData, partner_good_points: e.target.value })}
             fullWidth
             multiline
           />
           <TextField
             label="次回に向けて"
-            value={editData?.todo_for_next.replace(/\\n/g, '\n')}
+            value={editData?.todo_for_next}
             onChange={(e) => setEditData({ ...editData, todo_for_next: e.target.value })}
             fullWidth
             multiline

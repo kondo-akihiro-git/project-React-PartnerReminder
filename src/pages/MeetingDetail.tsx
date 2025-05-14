@@ -7,6 +7,7 @@ import EditMeetingDialog from '../components/Dialog';
 import Header from '../components/Header';
 import LoadingIndicator from '../components/LoadingIndicator';
 import SnackbarNotification from '../components/SnackbarNotification';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const MeetingDetail = () => {
   const navigate = useNavigate();
@@ -36,8 +37,16 @@ const MeetingDetail = () => {
     }).then(() => {
       setSnackbarOpen(true);
       setOpenEditDialog(false);
+  
+      // 🔄 更新後のデータを再取得
+      fetch(`http://localhost:8000/meetings/${meetingId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setMeeting(data.meeting);
+        });
     });
   };
+  
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -186,7 +195,11 @@ const MeetingDetail = () => {
               >
                 <Box
                   component="img"
-                  src={`http://localhost:8000/files/${meeting.my_appearance_image_path.split('files/')[1]}`}
+                  src={
+                    meeting.my_appearance_image_path
+                      ? `http://localhost:8000/files/${meeting.my_appearance_image_path.split('files/')[1]}`
+                      : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  }
                   alt="自分の服装"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -242,16 +255,16 @@ const MeetingDetail = () => {
       </Card>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 20, right: 20 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >
         <ListIcon sx={{ mr: 1 }} />
-        一覧
+        デート一覧
       </Fab>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 90, right: 20 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
         variant="extended"
         onClick={() => {
           setEditData(meeting);
@@ -259,8 +272,17 @@ const MeetingDetail = () => {
         }}
       >
         <EditIcon sx={{ mr: 1 }} />
-        編集
+        デート編集
       </Fab>
+            <Fab
+              color="inherit"
+              sx={{ position: 'fixed', bottom: 180, right: 20, width:200 }}
+              variant="extended"
+              onClick={() => navigate('/goodpoints')}
+            >
+              <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+              良いところ一覧
+            </Fab>
 
       <EditMeetingDialog
         open={openEditDialog}
@@ -270,7 +292,7 @@ const MeetingDetail = () => {
         onSave={handleSave}
       />
 
-      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} />
+      <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message="更新できました" severity='success' />
     </Box>
   );
 };

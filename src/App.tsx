@@ -3,6 +3,7 @@ import Top from './pages/Top';
 import MeetingList from './pages/MeetingList';
 import MeetingDetail from './pages/MeetingDetail';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import GoodPointsList from './pages/GoodPointsList';
 const theme = createTheme();
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Top />} />
           <Route path="/meetings" element={<MeetingList />} />
           <Route path="/meetings/:meetingId" element={<MeetingDetail />} />
+          <Route path="/goodpoints" element={<GoodPointsList />} />
         </Routes>
       </Router>
     </ThemeProvider>
