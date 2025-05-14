@@ -17,6 +17,8 @@ import AddDialog from '../components/AddDialog';
 import SnackbarNotification from '../components/SnackbarNotification';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import SearchBar from '../components/SearchBar';
+import { useMemo } from 'react';
 
 interface Meeting {
   id: number;
@@ -38,6 +40,12 @@ const MeetingList = () => {
   const [selectedMeetings, setSelectedMeetings] = useState<number[]>([]);  // 選択されたMeetingのIDを管理
   // MeetingList.tsx の useState に追加
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('info');
+
+  const [filters, setFilters] = useState({
+  title: '',
+  location: '',
+  date: '',
+});
 
 
   const fetchMeetings = async () => {
@@ -118,6 +126,27 @@ const MeetingList = () => {
     setSelectedMeetings([]);
   };
 
+  const handleFilterChange = (field: string, value: string) => {
+  setFilters((prev) => ({ ...prev, [field]: value }));
+};
+const handleClear = () => {
+  setFilters({
+    title: '',
+    location: '',
+    date: '',
+  });
+};
+
+const filteredMeetings = useMemo(() => {
+  return meetings.filter((m) => {
+    const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
+    const matchLocation = m.location.toLowerCase().includes(filters.location.toLowerCase());
+    const matchDate = filters.date ? m.date.startsWith(filters.date) : true;
+    return matchTitle && matchLocation && matchDate;
+  });
+}, [meetings, filters]);
+
+
   return (
     <Box p={4}>
       {/* Header */}
@@ -139,6 +168,8 @@ const MeetingList = () => {
         </Stack>
       </Box>
 
+      <SearchBar filters={filters} onChange={handleFilterChange} onClear={handleClear} />
+
       {/* Meeting Cards Grid */}
       <Box
         display="grid"
@@ -150,7 +181,7 @@ const MeetingList = () => {
         gap={2}
         mt={3}
       >
-        {meetings.map((meeting) => {
+        {filteredMeetings.map((meeting) => {
           const selectedIndex = selectedMeetings.indexOf(meeting.id);
           return (
             <Box key={meeting.id} position="relative">
