@@ -159,7 +159,7 @@ const MeetingList = () => {
         handleLogout={() => { }}
         anchorEl={anchorEl}
       />
-      <Box my={2}>
+      <Box mb={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Divider sx={{ flex: 1 }} />
           <Typography variant="h6" noWrap>
@@ -244,7 +244,7 @@ const MeetingList = () => {
       md: '1.4em',   // 通常画面
     },
     color: "white",
-    textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
+    textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
   }}
 >
   {meeting.title || 'タイトルなし'}
@@ -259,7 +259,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
+                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.location}
@@ -273,7 +273,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 35px black,1px 1px 35px black,1px 1px 35px black"
+                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.date}

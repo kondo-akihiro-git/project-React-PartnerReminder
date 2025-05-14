@@ -71,7 +71,7 @@ const MeetingDetail = () => {
         handleLogout={() => {}}
         anchorEl={anchorEl}
       />
-      <Box my={2}>
+      <Box mb={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Divider sx={{ flex: 1 }} />
           <Typography variant="h6" noWrap>デート詳細</Typography>
@@ -248,6 +248,56 @@ const MeetingDetail = () => {
                   sx: { pointerEvents: 'none', cursor: 'default' }
                 }}
               />
+            </Box>
+
+            <Box onDoubleClick={() => {
+              setEditData(meeting);
+              setOpenEditDialog(true);
+            }} sx={{ width: '100%', mt: '8px !important' }}>
+
+              {/* ラベル部分 */}
+              <Typography
+                variant="caption"
+              >
+                デートの背景画像
+              </Typography>
+
+              {/* 画像表示部分 */}
+              <Box
+                sx={{
+                  width: '100%', // 横幅いっぱいに広げる
+                  height: 300,  // 高さを固定
+                  overflow: 'hidden',  // オーバーフローを隠す
+                  border: '1px solid #ccc',
+                  borderRadius: 2,
+                  padding: 1,
+                  backgroundColor: '#fafafa',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  component="img"
+                  src={
+                    meeting.meeting_photo
+                      ? `http://localhost:8000/files/${meeting.meeting_photo.split('files/')[1]}`
+                      : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  }
+                  alt="自分の服装"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                  }}
+                  sx={{
+                    width: '100%',
+                    height: '100%',  // 高さ固定で横幅いっぱいに広がる
+                    objectFit: 'cover',  // 画像のトリミング
+                    borderRadius: 2
+                  }}
+                />
+              </Box>
             </Box>
 
           </Stack>

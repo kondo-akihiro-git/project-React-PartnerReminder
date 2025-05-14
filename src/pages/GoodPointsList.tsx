@@ -133,7 +133,7 @@ const GoodPointsList = () => {
 
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width: 150 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >

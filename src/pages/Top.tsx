@@ -30,16 +30,11 @@ const Top = () => {
           alignItems: 'center',
         }}
       >
-        <Typography
-          variant="h1"
-          sx={{
-            fontSize: 'min(10vw, 30vh)',
-            fontFamily: 'serif',
-            textAlign: 'center',
-          }}
-        >
-          Partner Reminder
-        </Typography>
+        <img
+          src={`${process.env.PUBLIC_URL}/images/pr_title.png`}
+          alt="PartnerReminder"
+          width="90vw"
+        />
       </Box>
 
       {/* ボタンエリア */}

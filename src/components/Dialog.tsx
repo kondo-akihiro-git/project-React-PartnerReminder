@@ -131,6 +131,70 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             fullWidth
             multiline
           />
+
+          <Typography variant="caption">デートの背景画像</Typography>
+          <Box
+            sx={{
+              width: '100%',
+              height: 300,
+              overflow: 'hidden',
+              border: '1px solid #ccc',
+              borderRadius: 2,
+              padding: 1,
+              backgroundColor: '#fafafa',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '0 !important',
+            }}
+          >
+            <Box
+              component="img"
+              src={
+                editData?.meeting_photo
+                  ? `http://localhost:8000/files/${editData.meeting_photo.split('files/')[1]}`
+                  : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+              }
+              alt="自分の服装"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+              }}
+              sx={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 2,
+              }}
+            />
+          </Box>
+
+          <Button variant="outlined" component="label" color='inherit'>
+            デートの背景画像を変更する
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const formData = new FormData();
+                  formData.append('file', file);
+                  fetch(`http://localhost:8000/upload-image`, {
+                    method: 'POST',
+                    body: formData,
+                  })
+                    .then((res) => res.json())
+                    .then((data) => {
+                      setEditData({ ...editData, meeting_photo: data.filename });
+                    });
+                }
+              }}
+            />
+          </Button>
+
+
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 4, py: 3, justifyContent: 'flex-end', gap: 2 }}>
