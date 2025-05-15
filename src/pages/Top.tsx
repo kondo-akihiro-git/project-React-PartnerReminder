@@ -114,7 +114,7 @@ const Top = () => {
               color="inherit"
               size="large"
               sx={{ minWidth: '30vw', height: '8vh' }}
-              onClick={() => navigate('/meetings')}
+              onClick={() => navigate('/login')}
             >
               ログイン
             </Button>
@@ -123,7 +123,7 @@ const Top = () => {
               color="inherit"
               size="large"
               sx={{ minWidth: '30vw', height: '8vh' }}
-              onClick={() => navigate('/meetings')}
+              onClick={() => navigate('/register')}
             >
               新規登録
             </Button>
