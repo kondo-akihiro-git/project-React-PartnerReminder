@@ -12,6 +12,7 @@ import axios from 'axios';
 import { CircularProgress } from '@mui/material';
 import { decryptUserId } from './utils/crypto';
 import { useNavigate } from 'react-router-dom';
+import LoadingIndicator from './components/LoadingIndicator';
 
 const theme = createTheme();
 
@@ -57,7 +58,7 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
   }, [navigate]);
 
   if (isChecking) {
-    return <CircularProgress />;
+    return <LoadingIndicator />;
   }
 
   return element;
