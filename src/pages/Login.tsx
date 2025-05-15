@@ -4,6 +4,7 @@ import {
   ButtonBase,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { encryptUserId } from '../utils/crypto';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,23 +12,24 @@ const Login = () => {
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    const res = await fetch('http://localhost:8000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+const handleLogin = async () => {
+  const res = await fetch('http://localhost:8000/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
 
-    if (res.ok) {
-      const data = await res.json();
-      localStorage.setItem('user_id', data.user_id);
-      navigate('/meetings');
-    } else {
-      alert('ログイン失敗');
-    }
-  };
+  if (res.ok) {
+    const data = await res.json();
+    const encryptedId = encryptUserId(data.user_id);
+    localStorage.removeItem('user_token')
+    localStorage.setItem('user_token', encryptedId);
+    navigate('/meetings');
+  } else {
+    alert('ログイン失敗');
+  }
+};
 
-  // ハートの雨
   useEffect(() => {
     const interval = setInterval(() => {
       const id = Math.random().toString(36).substr(2, 9);

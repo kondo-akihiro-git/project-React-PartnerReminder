@@ -58,6 +58,11 @@ const MeetingDetail = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user_token'); // トークンを削除
+    navigate('/login'); // ログインページへリダイレクト
+  };
+
   if (loading) return <LoadingIndicator />;
   if (!meeting) return <Typography>デート詳細が見つかりませんでした。</Typography>;
 
@@ -68,7 +73,7 @@ const MeetingDetail = () => {
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
         handleUserSettings={() => {}}
-        handleLogout={() => {}}
+        handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
       <Box mb={2}>

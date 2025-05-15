@@ -138,6 +138,11 @@ const MeetingList = () => {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user_token'); // トークンを削除
+    navigate('/login'); // ログインページへリダイレクト
+  };
+
   const filteredMeetings = useMemo(() => {
     return meetings.filter((m) => {
       const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
@@ -156,7 +161,7 @@ const MeetingList = () => {
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
         handleUserSettings={() => { }}
-        handleLogout={() => { }}
+        handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
       <Box mb={2}>

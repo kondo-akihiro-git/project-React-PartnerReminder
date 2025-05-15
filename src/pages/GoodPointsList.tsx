@@ -52,6 +52,11 @@ const GoodPointsList = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user_token'); // トークンを削除
+    navigate('/login'); // ログインページへリダイレクト
+  };
+
   return (
     <Box p={4}>
       <Header
@@ -59,7 +64,7 @@ const GoodPointsList = () => {
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
         handleUserSettings={() => { }}
-        handleLogout={() => { }}
+        handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
       <Box my={2}>
