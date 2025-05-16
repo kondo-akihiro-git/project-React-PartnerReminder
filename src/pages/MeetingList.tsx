@@ -355,6 +355,16 @@ const MeetingList = () => {
             <ThumbUpOffAltIcon sx={{ mr: 1 }} />
             良いところ一覧
           </Fab>
+
+          <Fab
+            color="inherit"
+            sx={{ position: 'fixed', bottom: 250, right: 20, width: 200 }}
+            variant="extended"
+            onClick={() => navigate('/goodpoints')}
+          >
+            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+            次の予定：5/17(水)
+          </Fab>
         </>
       )}
 
