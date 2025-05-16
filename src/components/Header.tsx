@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
   const navigate = useNavigate();
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-      <ButtonBase onClick={() => navigate('/')}>
+      <ButtonBase onClick={() => navigate('/meetings')}>
         <Box
           component="img"
           src={`${process.env.PUBLIC_URL}/images/pr_title.png`}
@@ -39,10 +39,10 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           onClick={handleMenuClick}
           sx={{
             width: {
-              xs: '26vw', // スマホなどの狭い画面：80vw
-              sm: '24vw', // タブレット程度：60vw
-              md: '22vw', // 中サイズ以上：40vw
-              lg: '20vw', // 広い画面：30vw
+              xs: '35vw', // スマホなどの狭い画面：80vw
+              sm: '33vw', // タブレット程度：60vw
+              md: '31vw', // 中サイズ以上：40vw
+              lg: '29vw', // 広い画面：30vw
             },
 
             textTransform: 'none',
@@ -61,10 +61,10 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           PaperProps={{
             sx: {
               width: {
-                xs: '26vw', // スマホなどの狭い画面：80vw
-                sm: '24vw', // タブレット程度：60vw
-                md: '22vw', // 中サイズ以上：40vw
-                lg: '20vw', // 広い画面：30vw
+              xs: '35vw', // スマホなどの狭い画面：80vw
+              sm: '33vw', // タブレット程度：60vw
+              md: '31vw', // 中サイズ以上：40vw
+              lg: '29vw', // 広い画面：30vw
               },
             },
           }}

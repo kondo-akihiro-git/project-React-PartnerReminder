@@ -20,7 +20,8 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import SearchBar from '../components/SearchBar';
 import { useMemo } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { kMaxLength } from 'buffer';
+import EditNextModal from '../components/EditNextModal';
+
 
 interface Meeting {
   id: number;
@@ -42,6 +43,7 @@ const MeetingList = () => {
   const [selectedMeetings, setSelectedMeetings] = useState<number[]>([]);  // 選択されたMeetingのIDを管理
   // MeetingList.tsx の useState に追加
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('info');
+  const [editNextOpen, setEditNextOpen] = useState(false);
 
   const [filters, setFilters] = useState({
     title: '',
@@ -49,6 +51,16 @@ const MeetingList = () => {
     date: '',
   });
   const [nextMeetingDate, setNextMeetingDate] = useState<string>('---');
+  const [nextMeetingDateRaw, setNextMeetingDateRaw] = useState<string | null>(null);
+
+
+  const handleEditNextOpen = () => {
+    setEditNextOpen(true);
+  };
+
+  const handleEditNextClose = () => {
+    setEditNextOpen(false);
+  };
 
 
   const fetchMeetings = async () => {
@@ -65,26 +77,30 @@ const MeetingList = () => {
     setMeetings(formatted);
   };
 
+  const formatDateWithWeekday = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const month = date.getMonth() + 1; // 0始まりなので+1
+    const day = date.getDate();
+    const weekday = weekdays[date.getDay()];
+    return `${month}/${day}(${weekday})`;
+  };
+
   useEffect(() => {
-const formatDateWithWeekday = (dateStr: string): string => {
-  const date = new Date(dateStr);
-  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-  const month = date.getMonth() + 1; // 0始まりなので+1
-  const day = date.getDate();
-  const weekday = weekdays[date.getDay()];
-  return `${month}/${day}(${weekday})`;
-};
+
 
     const fetchNextMeeting = async () => {
       try {
         const res = await fetch('http://localhost:8000/next');
         const data = await res.json();
         if (data?.date) {
+          setNextMeetingDateRaw(data.date);
           const formattedDate = formatDateWithWeekday(data.date);
           setNextMeetingDate(formattedDate);  // フォーマット済みで返ってくる想定
         }
       } catch (err) {
         console.error('次の予定の取得に失敗しました', err);
+        setNextMeetingDateRaw(null);
         setNextMeetingDate('---');
       }
     };
@@ -164,22 +180,22 @@ const formatDateWithWeekday = (dateStr: string): string => {
     });
   };
 
-const handleLogout = async () => {
-  try {
-    const res = await fetch('http://localhost:8000/logout', {
-      method: 'POST',
-      credentials: 'include',  // Cookie送信のために必要
-    });
-    if (!res.ok) {
-      throw new Error('ログアウトに失敗しました');
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/logout', {
+        method: 'POST',
+        credentials: 'include',  // Cookie送信のために必要
+      });
+      if (!res.ok) {
+        throw new Error('ログアウトに失敗しました');
+      }
+      navigate('/login');
+    } catch (error) {
+      setSnackbarMessage('ログアウト処理でエラーが発生しました');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
-    navigate('/login');
-  } catch (error) {
-    setSnackbarMessage('ログアウト処理でエラーが発生しました');
-    setSnackbarSeverity('error');
-    setSnackbarOpen(true);
-  }
-};
+  };
 
   const handleUserSettings = () => {
     navigate('/usersetting');
@@ -365,11 +381,13 @@ const handleLogout = async () => {
         <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
+            sx={{
+              position: 'fixed', bottom: 40, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
             variant="extended"
             onClick={() => setOpenAddDialog(true)}
           >
@@ -379,11 +397,13 @@ const handleLogout = async () => {
 
 
           <Fab
-            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
+            sx={{
+              position: 'fixed', bottom: 110, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
             variant="extended"
             onClick={handleDeleteClick}
           >
@@ -392,11 +412,13 @@ const handleLogout = async () => {
           </Fab>
 
           <Fab
-            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
+            sx={{
+              position: 'fixed', bottom: 180, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
@@ -405,13 +427,15 @@ const handleLogout = async () => {
           </Fab>
 
           <Fab
-            sx={{ position: 'fixed', bottom: 250, right: 20, width: 200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
+            sx={{
+              position: 'fixed', bottom: 250, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
             variant="extended"
-            onClick={() => navigate('/goodpoints')}
+            onClick={handleEditNextOpen}
           >
             <CalendarMonthIcon sx={{ mr: 1 }} />
             次の予定：{nextMeetingDate}
@@ -436,11 +460,13 @@ const handleLogout = async () => {
 
         <Fab
           color="inherit"
-          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
+          sx={{
+            position: 'fixed', bottom: 40, right: 20, width: 200, backgroundColor: 'white',
+            color: 'black', // アイコンの色を黒に（白背景のため）
+            '&:hover': {
+              backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+            },
+          }}
           variant="extended"
           onClick={handleCancelDeleteMode}
         >
@@ -461,6 +487,38 @@ const handleLogout = async () => {
         }}
       />
       <SnackbarNotification open={snackbarOpen} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} severity={snackbarSeverity} />
+
+      <EditNextModal
+        open={editNextOpen}
+        onClose={handleEditNextClose}
+
+        onUpdated={(success) => {
+          if(success){
+          fetchMeetings();
+          // 次回日付も再取得
+          fetch('http://localhost:8000/next')
+            .then(res => res.json())
+            .then(data => {
+              if (data?.date) {
+                const formatted = formatDateWithWeekday(data.date);
+                setNextMeetingDate(formatted);
+                setSnackbarMessage('次回の予定日を更新しました');
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+              }else{
+
+              }
+            });
+          }else{
+                setSnackbarMessage('更新に失敗しました');
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+          }
+        }}
+        initialDate={nextMeetingDateRaw}
+        currentDate={new Date().toISOString().split('T')[0]} // デフォルトで今日
+      />
+
     </Box>
   );
 };
