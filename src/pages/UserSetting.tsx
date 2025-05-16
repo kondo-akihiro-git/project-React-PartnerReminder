@@ -7,12 +7,12 @@ import axios from "axios";
 import SnackbarNotification from "../components/SnackbarNotification";
 import LoadingIndicator from "../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
-import { decryptUserId } from "../utils/crypto"; // ← 追加
 
 const UserSetting: React.FC = () => {
   const navigate = useNavigate();
 
-  const [userId, setUserId] = useState<number | null>(null); // ← userIdはStateで管理
+const [userId, setUserId] = useState<string | null>(null); // ← ここを修正
+
   const [form, setForm] = useState({
     name: "",
     password: "",
@@ -38,10 +38,9 @@ const UserSetting: React.FC = () => {
   };
 
   useEffect(() => {
-    const encrypted = localStorage.getItem("user_token");
-    if (encrypted) {
-      const decryptedId = decryptUserId(encrypted);
-      setUserId(decryptedId);
+    const userId = localStorage.getItem("user_token");
+    if (userId) {
+      setUserId(userId);
     } else {
       navigate("/login"); // user_idがない場合ログイン画面へ
     }
@@ -49,7 +48,7 @@ const UserSetting: React.FC = () => {
 
   useEffect(() => {
     if (userId !== null) {
-      fetchUserData(userId);
+      fetchUserData(Number(userId));
     }
   }, [userId]);
 

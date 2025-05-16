@@ -10,7 +10,6 @@ import Register from './pages/Register';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CircularProgress } from '@mui/material';
-import { decryptUserId } from './utils/crypto';
 import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from './components/LoadingIndicator';
 import UserSetting from './pages/UserSetting';
@@ -33,13 +32,8 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const encryptedToken = localStorage.getItem('user_token');
-      if (!encryptedToken) {
-        navigate('/login');
-        return;
-      }
 
-      const userId = decryptUserId(encryptedToken);
+      const userId = localStorage.getItem('user_token');
       if (!userId) {
         localStorage.removeItem('user_token');
         navigate('/login');

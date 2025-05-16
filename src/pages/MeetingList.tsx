@@ -66,18 +66,29 @@ const MeetingList = () => {
   };
 
   useEffect(() => {
+const formatDateWithWeekday = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  const month = date.getMonth() + 1; // 0始まりなので+1
+  const day = date.getDate();
+  const weekday = weekdays[date.getDay()];
+  return `${month}/${day}(${weekday})`;
+};
+
     const fetchNextMeeting = async () => {
       try {
-        const res = await fetch('http://localhost:8000/meetings/next');
+        const res = await fetch('http://localhost:8000/next');
         const data = await res.json();
         if (data?.date) {
-          setNextMeetingDate(data.date);  // フォーマット済みで返ってくる想定
+          const formattedDate = formatDateWithWeekday(data.date);
+          setNextMeetingDate(formattedDate);  // フォーマット済みで返ってくる想定
         }
       } catch (err) {
         console.error('次の予定の取得に失敗しました', err);
         setNextMeetingDate('---');
       }
     };
+    fetchNextMeeting();
 
     fetchMeetings();
   }, []);
@@ -367,7 +378,7 @@ const MeetingList = () => {
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
-            <ThumbUpOffAltIcon sx={{ mr: 1 }} />CalendarMonthIcon
+            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
             良いところ一覧
           </Fab>
 
@@ -377,7 +388,7 @@ const MeetingList = () => {
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
-            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+            <CalendarMonthIcon sx={{ mr: 1 }} />
             次の予定：{nextMeetingDate}
           </Fab>
         </>

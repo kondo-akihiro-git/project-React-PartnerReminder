@@ -4,7 +4,6 @@ import {
   ButtonBase,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { encryptUserId } from '../utils/crypto';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,9 +20,8 @@ const handleLogin = async () => {
 
   if (res.ok) {
     const data = await res.json();
-    const encryptedId = encryptUserId(data.user_id);
     localStorage.removeItem('user_token')
-    localStorage.setItem('user_token', encryptedId);
+    localStorage.setItem('user_token', data.user_id);
     navigate('/meetings');
   } else {
     alert('ログイン失敗');
