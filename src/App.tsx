@@ -13,6 +13,7 @@ import { CircularProgress } from '@mui/material';
 import { decryptUserId } from './utils/crypto';
 import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from './components/LoadingIndicator';
+import UserSetting from './pages/UserSetting';
 
 const theme = createTheme();
 
@@ -76,6 +77,7 @@ function App() {
           <Route path="/meetings" element={<PrivateRoute element={<MeetingList />} />} />
           <Route path="/meetings/:meetingId" element={<PrivateRoute element={<MeetingDetail />} />} />
           <Route path="/goodpoints" element={<PrivateRoute element={<GoodPointsList />} />} />
+          <Route path="/usersetting" element={<PrivateRoute element={<UserSetting />} />} />
           <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
       </Router>

@@ -143,6 +143,10 @@ const MeetingList = () => {
     navigate('/login'); // ログインページへリダイレクト
   };
 
+  const handleUserSettings = () => {
+    navigate('/usersetting'); 
+  };
+
   const filteredMeetings = useMemo(() => {
     return meetings.filter((m) => {
       const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
@@ -160,7 +164,7 @@ const MeetingList = () => {
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
-        handleUserSettings={() => { }}
+        handleUserSettings={handleUserSettings}
         handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
