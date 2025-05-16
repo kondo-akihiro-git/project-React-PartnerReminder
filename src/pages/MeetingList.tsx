@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import SearchBar from '../components/SearchBar';
 import { useMemo } from 'react';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { kMaxLength } from 'buffer';
 
 interface Meeting {
@@ -47,6 +48,7 @@ const MeetingList = () => {
     location: '',
     date: '',
   });
+  const [nextMeetingDate, setNextMeetingDate] = useState<string>('---');
 
 
   const fetchMeetings = async () => {
@@ -64,6 +66,30 @@ const MeetingList = () => {
   };
 
   useEffect(() => {
+const formatDateWithWeekday = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  const month = date.getMonth() + 1; // 0始まりなので+1
+  const day = date.getDate();
+  const weekday = weekdays[date.getDay()];
+  return `${month}/${day}(${weekday})`;
+};
+
+    const fetchNextMeeting = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/next');
+        const data = await res.json();
+        if (data?.date) {
+          const formattedDate = formatDateWithWeekday(data.date);
+          setNextMeetingDate(formattedDate);  // フォーマット済みで返ってくる想定
+        }
+      } catch (err) {
+        console.error('次の予定の取得に失敗しました', err);
+        setNextMeetingDate('---');
+      }
+    };
+    fetchNextMeeting();
+
     fetchMeetings();
   }, []);
 
@@ -138,6 +164,27 @@ const MeetingList = () => {
     });
   };
 
+const handleLogout = async () => {
+  try {
+    const res = await fetch('http://localhost:8000/logout', {
+      method: 'POST',
+      credentials: 'include',  // Cookie送信のために必要
+    });
+    if (!res.ok) {
+      throw new Error('ログアウトに失敗しました');
+    }
+    navigate('/login');
+  } catch (error) {
+    setSnackbarMessage('ログアウト処理でエラーが発生しました');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
+  }
+};
+
+  const handleUserSettings = () => {
+    navigate('/usersetting');
+  };
+
   const filteredMeetings = useMemo(() => {
     return meetings.filter((m) => {
       const matchTitle = m.title?.toLowerCase().includes(filters.title.toLowerCase()) ?? false;
@@ -155,8 +202,8 @@ const MeetingList = () => {
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
-        handleUserSettings={() => { }}
-        handleLogout={() => { }}
+        handleUserSettings={handleUserSettings}
+        handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
       <Box mb={2}>
@@ -225,30 +272,30 @@ const MeetingList = () => {
                 onClick={() => handleCardClick(meeting.id)}
               >
                 <Box
-  m={{
-    xs: 4, // スマホなどの小さい画面
-    sm: 4, // タブレットなどの中サイズ
-    md: 6, // デスクトップなどの通常サイズ以上
-  }}
->
+                  m={{
+                    xs: 4, // スマホなどの小さい画面
+                    sm: 4, // タブレットなどの中サイズ
+                    md: 6, // デスクトップなどの通常サイズ以上
+                  }}
+                >
                   {/* タイトル */}
                   <Box>
-<Typography
-  
-  fontWeight="bold"
-  sx={{
+                    <Typography
 
-        fontSize: {
-      xs: '1.2rem', // スマホ
-      sm: '1.3rem', // タブレット
-      md: '1.4em',   // 通常画面
-    },
-    color: "white",
-    textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
-  }}
->
-  {meeting.title || 'タイトルなし'}
-</Typography>
+                      fontWeight="bold"
+                      sx={{
+
+                        fontSize: {
+                          xs: '1.2rem', // スマホ
+                          sm: '1.3rem', // タブレット
+                          md: '1.4em',   // 通常画面
+                        },
+                        color: "white",
+                        textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                      }}
+                    >
+                      {meeting.title || 'タイトルなし'}
+                    </Typography>
                   </Box>
 
                   <CardContent sx={{ pl: 0 }}>
@@ -259,7 +306,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.location}
@@ -273,7 +320,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.date}
@@ -318,7 +365,11 @@ const MeetingList = () => {
         <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={() => setOpenAddDialog(true)}
           >
@@ -328,8 +379,11 @@ const MeetingList = () => {
 
 
           <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={handleDeleteClick}
           >
@@ -338,13 +392,29 @@ const MeetingList = () => {
           </Fab>
 
           <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
             <ThumbUpOffAltIcon sx={{ mr: 1 }} />
             良いところ一覧
+          </Fab>
+
+          <Fab
+            sx={{ position: 'fixed', bottom: 250, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
+            variant="extended"
+            onClick={() => navigate('/goodpoints')}
+          >
+            <CalendarMonthIcon sx={{ mr: 1 }} />
+            次の予定：{nextMeetingDate}
           </Fab>
         </>
       )}
@@ -352,7 +422,7 @@ const MeetingList = () => {
       {isDeleteMode && selectedMeetings.length > 0 && (
 
         <Fab
-          color="inherit"
+          color="error"
           sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
           variant="extended"
           onClick={handleDeleteExecute}
@@ -366,7 +436,11 @@ const MeetingList = () => {
 
         <Fab
           color="inherit"
-          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
           variant="extended"
           onClick={handleCancelDeleteMode}
         >

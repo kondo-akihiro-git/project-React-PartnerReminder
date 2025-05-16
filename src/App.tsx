@@ -4,7 +4,53 @@ import MeetingList from './pages/MeetingList';
 import MeetingDetail from './pages/MeetingDetail';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import GoodPointsList from './pages/GoodPointsList';
+import { JSX } from 'react';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import LoadingIndicator from './components/LoadingIndicator';
+import UserSetting from './pages/UserSetting';
+
 const theme = createTheme();
+
+const NotFoundRedirect = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate('/login');
+  }, [navigate]);
+
+  return null;
+};
+
+const PrivateRoute = ({ element }: { element: JSX.Element }) => {
+  const [isChecking, setIsChecking] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        // CookieにセットされたJWTをサーバーが読むため、axiosはwithCredentials:trueにする
+        await axios.get("http://localhost:8000/me", { withCredentials: true });
+        setIsChecking(false); // 認証成功
+      } catch {
+        navigate("/login");
+      }
+    };
+
+    checkUser();
+  }, [navigate]);
+
+  if (isChecking) {
+    return <LoadingIndicator />;
+  }
+
+  return element;
+};
+
 
 function App() {
   return (
@@ -13,9 +59,13 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Top />} />
-          <Route path="/meetings" element={<MeetingList />} />
-          <Route path="/meetings/:meetingId" element={<MeetingDetail />} />
-          <Route path="/goodpoints" element={<GoodPointsList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/meetings" element={<PrivateRoute element={<MeetingList />} />} />
+          <Route path="/meetings/:meetingId" element={<PrivateRoute element={<MeetingDetail />} />} />
+          <Route path="/goodpoints" element={<PrivateRoute element={<GoodPointsList />} />} />
+          <Route path="/usersetting" element={<PrivateRoute element={<UserSetting />} />} />
+          <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
       </Router>
     </ThemeProvider>

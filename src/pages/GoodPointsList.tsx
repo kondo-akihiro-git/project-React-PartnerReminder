@@ -52,14 +52,33 @@ const GoodPointsList = () => {
     setAnchorEl(null);
   };
 
+const handleLogout = async () => {
+  try {
+    const res = await fetch('http://localhost:8000/logout', {
+      method: 'POST',
+      credentials: 'include',  // Cookie送信のために必要
+    });
+    if (!res.ok) {
+      throw new Error('ログアウトに失敗しました');
+    }
+    navigate('/login');
+  } catch (error) {
+    navigate('/login');
+  }
+};
+
+  const handleUserSettings = () => {
+    navigate('/usersetting');
+  };
+
   return (
     <Box p={4}>
       <Header
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
-        handleUserSettings={() => { }}
-        handleLogout={() => { }}
+        handleUserSettings={handleUserSettings}
+        handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
       <Box my={2}>
@@ -133,7 +152,11 @@ const GoodPointsList = () => {
 
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >
