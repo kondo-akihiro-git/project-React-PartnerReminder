@@ -32,20 +32,12 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-
-      const userId = localStorage.getItem('user_token');
-      if (!userId) {
-        localStorage.removeItem('user_token');
-        navigate('/login');
-        return;
-      }
-
       try {
-        await axios.get(`http://localhost:8000/verify-user/${userId}`);
-        setIsChecking(false); // OK
+        // CookieにセットされたJWTをサーバーが読むため、axiosはwithCredentials:trueにする
+        await axios.get("http://localhost:8000/me", { withCredentials: true });
+        setIsChecking(false); // 認証成功
       } catch {
-        localStorage.removeItem('user_token');
-        navigate('/login');
+        navigate("/login");
       }
     };
 
@@ -58,6 +50,7 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
 
   return element;
 };
+
 
 function App() {
   return (

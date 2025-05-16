@@ -2,26 +2,36 @@ import React, { JSX, useEffect, useState } from 'react';
 import {
   Card, CardContent, Typography, TextField, Button, Box, Stack,
   ButtonBase,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
   const navigate = useNavigate();
+const [showPassword, setShowPassword] = useState(false);
+
+const handleClickShowPassword = () => {
+  setShowPassword((prev) => !prev);
+};
+
+const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  event.preventDefault();
+};
 
 const handleLogin = async () => {
   const res = await fetch('http://localhost:8000/login', {
     method: 'POST',
+    credentials: "include",
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   });
 
   if (res.ok) {
-    const data = await res.json();
-    localStorage.removeItem('user_token')
-    localStorage.setItem('user_token', data.user_id);
     navigate('/meetings');
   } else {
     alert('ログイン失敗');
@@ -118,14 +128,31 @@ const handleLogin = async () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
-                label="パスワード"
-                type="password"
-                fullWidth
-                margin="normal"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+
+
+<TextField
+  fullWidth
+  margin="normal"
+  label="パスワード"
+  name="password"
+  type={showPassword ? 'text' : 'password'}
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={handleClickShowPassword}
+          onMouseDown={handleMouseDownPassword}
+          edge="end"
+        >
+          {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
+
               <Button
                 variant="contained"
                 fullWidth

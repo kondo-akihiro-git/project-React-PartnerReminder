@@ -164,10 +164,22 @@ const formatDateWithWeekday = (dateStr: string): string => {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_token'); // トークンを削除
-    navigate('/login'); // ログインページへリダイレクト
-  };
+const handleLogout = async () => {
+  try {
+    const res = await fetch('http://localhost:8000/logout', {
+      method: 'POST',
+      credentials: 'include',  // Cookie送信のために必要
+    });
+    if (!res.ok) {
+      throw new Error('ログアウトに失敗しました');
+    }
+    navigate('/login');
+  } catch (error) {
+    setSnackbarMessage('ログアウト処理でエラーが発生しました');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
+  }
+};
 
   const handleUserSettings = () => {
     navigate('/usersetting');

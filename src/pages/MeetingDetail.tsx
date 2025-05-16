@@ -58,9 +58,22 @@ const MeetingDetail = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_token'); // トークンを削除
-    navigate('/login'); // ログインページへリダイレクト
+const handleLogout = async () => {
+  try {
+    const res = await fetch('http://localhost:8000/logout', {
+      method: 'POST',
+      credentials: 'include',  // Cookie送信のために必要
+    });
+    if (!res.ok) {
+      throw new Error('ログアウトに失敗しました');
+    }
+    navigate('/login');
+  } catch (error) {
+    navigate('/login');
+  }
+};
+  const handleUserSettings = () => {
+    navigate('/usersetting');
   };
 
   if (loading) return <LoadingIndicator />;
@@ -72,7 +85,7 @@ const MeetingDetail = () => {
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         menuOpen={menuOpen}
-        handleUserSettings={() => {}}
+        handleUserSettings={handleUserSettings}
         handleLogout={handleLogout}
         anchorEl={anchorEl}
       />
