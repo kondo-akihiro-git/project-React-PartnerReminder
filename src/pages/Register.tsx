@@ -1,12 +1,15 @@
 import React, { useState, useEffect, JSX } from "react";
 import {
   Box, Button, TextField, Typography, Card, CardContent, Stack,
-  ButtonBase
+  ButtonBase,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import axios from "axios";
 import SnackbarNotification from "../components/SnackbarNotification";
 import LoadingIndicator from "../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +26,16 @@ const Register: React.FC = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [showLoading, setShowLoading] = useState(false);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+
+const handleClickShowPassword = () => {
+  setShowPassword((prev) => !prev);
+};
+
+const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  event.preventDefault();
+};
+
 
   // ハートの雨用
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
@@ -163,7 +176,28 @@ const Register: React.FC = () => {
                   <TextField fullWidth margin="normal" label="名前" name="name" value={form.name} onChange={handleChange} />
                   <TextField fullWidth margin="normal" label="電話番号" name="phone" value={form.phone} onChange={handleChange} />
                   <TextField fullWidth margin="normal" label="メールアドレス" name="email" value={form.email} onChange={handleChange} />
-                  <TextField fullWidth margin="normal" label="パスワード" type="password" name="password" value={form.password} onChange={handleChange} />
+<TextField
+  fullWidth
+  margin="normal"
+  label="パスワード"
+  name="password"
+  type={showPassword ? 'text' : 'password'}
+value={form.password} onChange={handleChange}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={handleClickShowPassword}
+          onMouseDown={handleMouseDownPassword}
+          edge="end"
+        >
+          {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
+
                   <Button variant="contained" color="inherit" fullWidth sx={{ mt: 2 }} onClick={sendVerificationEmail}>
                     認証コードを送信
                   </Button>
