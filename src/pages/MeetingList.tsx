@@ -365,7 +365,11 @@ const handleLogout = async () => {
         <>
           <Fab
             color="inherit"
-            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={() => setOpenAddDialog(true)}
           >
@@ -375,8 +379,11 @@ const handleLogout = async () => {
 
 
           <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 110, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={handleDeleteClick}
           >
@@ -385,8 +392,11 @@ const handleLogout = async () => {
           </Fab>
 
           <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 180, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
@@ -395,8 +405,11 @@ const handleLogout = async () => {
           </Fab>
 
           <Fab
-            color="inherit"
-            sx={{ position: 'fixed', bottom: 250, right: 20, width: 200 }}
+            sx={{ position: 'fixed', bottom: 250, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
@@ -409,7 +422,7 @@ const handleLogout = async () => {
       {isDeleteMode && selectedMeetings.length > 0 && (
 
         <Fab
-          color="inherit"
+          color="error"
           sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
           variant="extended"
           onClick={handleDeleteExecute}
@@ -423,7 +436,11 @@ const handleLogout = async () => {
 
         <Fab
           color="inherit"
-          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200 }}
+          sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
           variant="extended"
           onClick={handleCancelDeleteMode}
         >

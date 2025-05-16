@@ -14,11 +14,29 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 const UserSetting: React.FC = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", password: "" });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [showLoading, setShowLoading] = useState(false);
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
 const [showPassword, setShowPassword] = useState(false);
+
+const [form, setForm] = useState({ name: "", password: "", phone: "" });
+
+const isPasswordValid = (password: string) => {
+  return (
+    password.length > 0 &&
+    /^[\x20-\x7E]*$/.test(password) && // 半角英数字記号のみ
+    !/\s/.test(password) // スペース禁止
+  );
+};
+
+const isPhoneValid = (phone: string) => {
+  return /^[0-9]+$/.test(phone);
+};
+
+const isFormValid = () => {
+  return form.name && isPasswordValid(form.password) && isPhoneValid(form.phone);
+};
+
 
 const handleClickShowPassword = () => {
   setShowPassword((prev) => !prev);
@@ -38,6 +56,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
       setUserId(res.data.user.id);
       setForm({
         name: res.data.user.name || "",
+        phone: res.data.user.phone || "",
         password: "",
       });
     } catch {
@@ -90,6 +109,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
     try {
       await axios.put(`http://localhost:8000/users/${userId}`, {
         name: form.name,
+        phone: form.phone,
         password: form.password,
       });
       setSnackbar({ open: true, message: "ユーザー情報を更新しました", severity: "success" });
@@ -168,11 +188,29 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
 <TextField
   fullWidth
   margin="normal"
+  label="電話番号"
+  name="phone"
+  value={form.phone}
+  onChange={handleChange}
+/>
+
+
+<TextField
+  fullWidth
+  margin="normal"
   label="パスワード"
   name="password"
   type={showPassword ? 'text' : 'password'}
   value={form.password}
   onChange={handleChange}
+
+  error={!isPasswordValid(form.password) && form.password.length > 0}
+  helperText={
+    !isPasswordValid(form.password) && form.password.length > 0
+      ? "半角英数字・記号のみ。スペース・全角不可。"
+      : ""
+  }
+
   InputProps={{
     endAdornment: (
       <InputAdornment position="end">
@@ -194,7 +232,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
                 fullWidth
                 sx={{ mt: 2 }}
                 onClick={handleUpdate}
-                disabled={!form.name || !form.password}
+                disabled={!isFormValid()}
               >
                 更新する
               </Button>

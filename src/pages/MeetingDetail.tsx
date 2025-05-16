@@ -323,7 +323,11 @@ const handleLogout = async () => {
       </Card>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width:200 }}
+        sx={{ position: 'fixed', bottom: 40, right: 20, width:200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
         variant="extended"
         onClick={() => navigate('/meetings')}
       >
@@ -332,7 +336,11 @@ const handleLogout = async () => {
       </Fab>
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 110, right: 20, width:200 }}
+        sx={{ position: 'fixed', bottom: 110, right: 20, width:200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
         variant="extended"
         onClick={() => {
           setEditData(meeting);
@@ -344,7 +352,11 @@ const handleLogout = async () => {
       </Fab>
             <Fab
               color="inherit"
-              sx={{ position: 'fixed', bottom: 180, right: 20, width:200 }}
+              sx={{ position: 'fixed', bottom: 180, right: 20, width:200,backgroundColor: 'white',
+    color: 'black', // アイコンの色を黒に（白背景のため）
+    '&:hover': {
+      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+    }, }}
               variant="extended"
               onClick={() => navigate('/goodpoints')}
             >

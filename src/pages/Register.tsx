@@ -28,6 +28,27 @@ const Register: React.FC = () => {
   const [redirectToLogin, setRedirectToLogin] = useState(false);
 const [showPassword, setShowPassword] = useState(false);
 
+const isPasswordValid = (password: string) => {
+  return (
+    password.length > 0 &&
+    /^[\x20-\x7E]*$/.test(password) && // 半角英数字記号のみ
+    !/\s/.test(password) // スペース禁止
+  );
+};
+
+const isPhoneValid = (phone: string) => {
+  return /^[0-9]+$/.test(phone); // 数字のみ
+};
+
+const isFormValid = () => {
+  return form.name && isPhoneValid(form.phone) && form.email && isPasswordValid(form.password);
+};
+
+const isCodeValid = () => {
+  return form.code.length > 0;
+};
+
+
 const handleClickShowPassword = () => {
   setShowPassword((prev) => !prev);
 };
@@ -183,6 +204,14 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
   name="password"
   type={showPassword ? 'text' : 'password'}
 value={form.password} onChange={handleChange}
+
+  error={!isPasswordValid(form.password) && form.password.length > 0}
+  helperText={
+    !isPasswordValid(form.password) && form.password.length > 0
+      ? "半角英数字・記号のみ。スペース・全角不可。"
+      : ""
+  }
+
   InputProps={{
     endAdornment: (
       <InputAdornment position="end">
@@ -198,7 +227,7 @@ value={form.password} onChange={handleChange}
   }}
 />
 
-                  <Button variant="contained" color="inherit" fullWidth sx={{ mt: 2 }} onClick={sendVerificationEmail}>
+                  <Button variant="contained" color="inherit" fullWidth sx={{ mt: 2 }} onClick={sendVerificationEmail}disabled={!isFormValid()}>
                     認証コードを送信
                   </Button>
                   <Box display="flex" justifyContent="flex-end" mt={2}>
@@ -217,6 +246,7 @@ value={form.password} onChange={handleChange}
                     sx={{ mt: 2 }}
                     color="inherit" // ← Loginと統一
                     onClick={handleRegister}
+                    disabled={!isCodeValid()}
                   >
                     登録
                   </Button>
