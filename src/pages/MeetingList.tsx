@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import SearchBar from '../components/SearchBar';
 import { useMemo } from 'react';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { kMaxLength } from 'buffer';
 
 interface Meeting {
@@ -47,6 +48,7 @@ const MeetingList = () => {
     location: '',
     date: '',
   });
+  const [nextMeetingDate, setNextMeetingDate] = useState<string>('---');
 
 
   const fetchMeetings = async () => {
@@ -64,6 +66,19 @@ const MeetingList = () => {
   };
 
   useEffect(() => {
+    const fetchNextMeeting = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/meetings/next');
+        const data = await res.json();
+        if (data?.date) {
+          setNextMeetingDate(data.date);  // フォーマット済みで返ってくる想定
+        }
+      } catch (err) {
+        console.error('次の予定の取得に失敗しました', err);
+        setNextMeetingDate('---');
+      }
+    };
+
     fetchMeetings();
   }, []);
 
@@ -144,7 +159,7 @@ const MeetingList = () => {
   };
 
   const handleUserSettings = () => {
-    navigate('/usersetting'); 
+    navigate('/usersetting');
   };
 
   const filteredMeetings = useMemo(() => {
@@ -234,30 +249,30 @@ const MeetingList = () => {
                 onClick={() => handleCardClick(meeting.id)}
               >
                 <Box
-  m={{
-    xs: 4, // スマホなどの小さい画面
-    sm: 4, // タブレットなどの中サイズ
-    md: 6, // デスクトップなどの通常サイズ以上
-  }}
->
+                  m={{
+                    xs: 4, // スマホなどの小さい画面
+                    sm: 4, // タブレットなどの中サイズ
+                    md: 6, // デスクトップなどの通常サイズ以上
+                  }}
+                >
                   {/* タイトル */}
                   <Box>
-<Typography
-  
-  fontWeight="bold"
-  sx={{
+                    <Typography
 
-        fontSize: {
-      xs: '1.2rem', // スマホ
-      sm: '1.3rem', // タブレット
-      md: '1.4em',   // 通常画面
-    },
-    color: "white",
-    textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
-  }}
->
-  {meeting.title || 'タイトルなし'}
-</Typography>
+                      fontWeight="bold"
+                      sx={{
+
+                        fontSize: {
+                          xs: '1.2rem', // スマホ
+                          sm: '1.3rem', // タブレット
+                          md: '1.4em',   // 通常画面
+                        },
+                        color: "white",
+                        textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                      }}
+                    >
+                      {meeting.title || 'タイトルなし'}
+                    </Typography>
                   </Box>
 
                   <CardContent sx={{ pl: 0 }}>
@@ -268,7 +283,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.location}
@@ -282,7 +297,7 @@ const MeetingList = () => {
                         fontWeight="bold"
                         sx={{
                           color: "white",
-                          textShadow:"1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
                         }}
                       >
                         {meeting.date}
@@ -352,7 +367,7 @@ const MeetingList = () => {
             variant="extended"
             onClick={() => navigate('/goodpoints')}
           >
-            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+            <ThumbUpOffAltIcon sx={{ mr: 1 }} />CalendarMonthIcon
             良いところ一覧
           </Fab>
 
@@ -363,7 +378,7 @@ const MeetingList = () => {
             onClick={() => navigate('/goodpoints')}
           >
             <ThumbUpOffAltIcon sx={{ mr: 1 }} />
-            次の予定：5/17(水)
+            次の予定：{nextMeetingDate}
           </Fab>
         </>
       )}
