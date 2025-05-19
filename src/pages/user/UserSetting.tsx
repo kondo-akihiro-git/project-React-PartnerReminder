@@ -6,8 +6,8 @@ import {
   IconButton,
 } from "@mui/material";
 import axios from "axios";
-import SnackbarNotification from "../components/SnackbarNotification";
-import LoadingIndicator from "../components/LoadingIndicator";
+import SnackbarNotification from "../../components/SnackbarNotification";
+import LoadingIndicator from "../../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -17,39 +17,41 @@ const UserSetting: React.FC = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [showLoading, setShowLoading] = useState(false);
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
-const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-const [form, setForm] = useState({ name: "", password: "", phone: "" });
+  const [form, setForm] = useState({ name: "", password: "", phone: "" });
 
-const isPasswordValid = (password: string) => {
-  return (
-    password.length > 0 &&
-    /^[\x20-\x7E]*$/.test(password) && // 半角英数字記号のみ
-    !/\s/.test(password) // スペース禁止
-  );
-};
+  const isPasswordValid = (password: string) => {
+    return (
+      password.length > 0 &&
+      /^[\x20-\x7E]*$/.test(password) && // 半角英数字記号のみ
+      !/\s/.test(password) // スペース禁止
+    );
+  };
 
-const isPhoneValid = (phone: string) => {
-  return /^[0-9]+$/.test(phone);
-};
+  const isPhoneValid = (phone: string) => {
+    return /^[0-9]+$/.test(phone);
+  };
 
-const isFormValid = () => {
-  return form.name && isPasswordValid(form.password) && isPhoneValid(form.phone);
-};
+  const isFormValid = () => {
+    return form.name && isPasswordValid(form.password) && isPhoneValid(form.phone);
+  };
 
 
-const handleClickShowPassword = () => {
-  setShowPassword((prev) => !prev);
-};
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
-const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-  event.preventDefault();
-};
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
   const fetchCurrentUser = async () => {
     try {
       const res = await axios.get("http://localhost:8000/me", { withCredentials: true });
@@ -64,9 +66,8 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
     }
   };
 
-  useEffect(() => {
     fetchCurrentUser();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -185,46 +186,46 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
                 onChange={handleChange}
               />
 
-<TextField
-  fullWidth
-  margin="normal"
-  label="電話番号"
-  name="phone"
-  value={form.phone}
-  onChange={handleChange}
-/>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="電話番号"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+              />
 
 
-<TextField
-  fullWidth
-  margin="normal"
-  label="パスワード"
-  name="password"
-  type={showPassword ? 'text' : 'password'}
-  value={form.password}
-  onChange={handleChange}
+              <TextField
+                fullWidth
+                margin="normal"
+                label="パスワード"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={handleChange}
 
-  error={!isPasswordValid(form.password) && form.password.length > 0}
-  helperText={
-    !isPasswordValid(form.password) && form.password.length > 0
-      ? "半角英数字・記号のみ。スペース・全角不可。"
-      : ""
-  }
+                error={!isPasswordValid(form.password) && form.password.length > 0}
+                helperText={
+                  !isPasswordValid(form.password) && form.password.length > 0
+                    ? "半角英数字・記号のみ。スペース・全角不可。"
+                    : ""
+                }
 
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton
-          onClick={handleClickShowPassword}
-          onMouseDown={handleMouseDownPassword}
-          edge="end"
-        >
-          {showPassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
               <Button
                 variant="contained"

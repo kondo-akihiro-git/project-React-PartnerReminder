@@ -1,18 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Top from './pages/Top';
-import MeetingList from './pages/MeetingList';
-import MeetingDetail from './pages/MeetingDetail';
+import UserTop from './pages/user/UserTop';
+import MeetingList from './pages/meeting/MeetingList';
+import MeetingDetail from './pages/meeting/MeetingDetail';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import GoodPointsList from './pages/GoodPointsList';
+import GoodPointsList from './pages/meeting/GoodPointsList';
 import { JSX } from 'react';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import UserLogin from './pages/user/UserLogin';
+import UserRegister from './pages/user/UserRegister';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from './components/LoadingIndicator';
-import UserSetting from './pages/UserSetting';
+import UserSetting from './pages/user/UserSetting';
 
 const theme = createTheme();
 
@@ -58,9 +57,9 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={<Top />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<UserTop />} />
+          <Route path="/login" element={<UserLogin />} />
+          <Route path="/register" element={<UserRegister />} />
           <Route path="/meetings" element={<PrivateRoute element={<MeetingList />} />} />
           <Route path="/meetings/:meetingId" element={<PrivateRoute element={<MeetingDetail />} />} />
           <Route path="/goodpoints" element={<PrivateRoute element={<GoodPointsList />} />} />

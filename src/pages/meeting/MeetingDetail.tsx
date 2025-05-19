@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Box, Typography, Stack, TextField, Divider, Card, CardContent, Button, Fab } from '@mui/material';
+import { Box, Typography, Stack, TextField, Divider, Card, CardContent, Fab } from '@mui/material';
 import ListIcon from '@mui/icons-material/List';
 import EditIcon from '@mui/icons-material/Edit';
-import EditMeetingDialog from '../components/Dialog';
-import Header from '../components/Header';
-import LoadingIndicator from '../components/LoadingIndicator';
-import SnackbarNotification from '../components/SnackbarNotification';
+import EditMeetingDialog from '../../components/EditMeetingDialog';
+import Header from '../../components/LogoHeader';
+import LoadingIndicator from '../../components/LoadingIndicator';
+import SnackbarNotification from '../../components/SnackbarNotification';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const MeetingDetail = () => {

@@ -11,16 +11,16 @@ import {
   CardContent,
   Fab,
 } from '@mui/material';
-import Header from '../components/Header';
+import Header from '../../components/LogoHeader';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
-import AddDialog from '../components/AddDialog';
-import SnackbarNotification from '../components/SnackbarNotification';
+import AddDialog from '../../components/AddMeetingDialog';
+import SnackbarNotification from '../../components/SnackbarNotification';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../../components/SearchBar';
 import { useMemo } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import EditNextModal from '../components/EditNextModal';
+import EditNextModal from '../../components/EditNextModal';
 
 
 interface Meeting {
