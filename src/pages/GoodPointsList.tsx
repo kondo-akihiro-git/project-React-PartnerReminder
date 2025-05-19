@@ -29,7 +29,7 @@ const GoodPointsList = () => {
   const navigate = useNavigate();
 
   const fetchGoodPoints = async () => {
-    const res = await fetch('http://localhost:8000/goodpoints');
+    const res = await fetch('http://localhost:8000/goodpoints',{credentials: "include"});
     const data = await res.json();
     // good_point が空文字や改行だけのものを除外
     const validPoints = data.goodpoints.goodpoints.filter((p: GoodPoint) =>

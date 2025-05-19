@@ -21,7 +21,7 @@ const MeetingDetail = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/meetings/${meetingId}`)
+    fetch(`http://localhost:8000/meetings/${meetingId}`,{credentials: "include",})
       .then((res) => res.json())
       .then((data) => {
         setMeeting(data.meeting);
@@ -32,6 +32,7 @@ const MeetingDetail = () => {
   const handleSave = () => {
     fetch(`http://localhost:8000/meetings/${meetingId}`, {
       method: 'PUT',
+      credentials: "include",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(editData),
     }).then(() => {
@@ -39,7 +40,7 @@ const MeetingDetail = () => {
       setOpenEditDialog(false);
   
       // 🔄 更新後のデータを再取得
-      fetch(`http://localhost:8000/meetings/${meetingId}`)
+      fetch(`http://localhost:8000/meetings/${meetingId}`,{ credentials: "include"})
         .then((res) => res.json())
         .then((data) => {
           setMeeting(data.meeting);

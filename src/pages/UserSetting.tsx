@@ -160,7 +160,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
       >
         <Box flexDirection="column">
           <Stack alignItems="center">
-            <ButtonBase onClick={() => navigate("/")}>
+            <ButtonBase onClick={() => navigate("/meetings")}>
               <img
                 src={`${process.env.PUBLIC_URL}/images/pr_title.png`}
                 alt="PartnerReminder"
