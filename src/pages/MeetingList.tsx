@@ -64,7 +64,7 @@ const MeetingList = () => {
 
 
   const fetchMeetings = async () => {
-    const res = await fetch('http://localhost:8000/meetings');
+    const res = await fetch('http://localhost:8000/meetings',{credentials: "include"});
     const data = await res.json();
     const formatted = data.meetings.map((m: any[]) => ({
       id: m[0],
@@ -142,6 +142,7 @@ const MeetingList = () => {
     try {
       const response = await fetch('http://localhost:8000/meetings/delete', {
         method: 'POST',
+        credentials: "include",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedMeetings }),
       });
