@@ -91,7 +91,7 @@ const MeetingList = () => {
 
     const fetchNextMeeting = async () => {
       try {
-        const res = await fetch('http://localhost:8000/next');
+        const res = await fetch('http://localhost:8000/next',{credentials: "include"});
         const data = await res.json();
         if (data?.date) {
           setNextMeetingDateRaw(data.date);
@@ -497,7 +497,7 @@ const MeetingList = () => {
           if(success){
           fetchMeetings();
           // 次回日付も再取得
-          fetch('http://localhost:8000/next')
+          fetch('http://localhost:8000/next',{credentials: "include"})
             .then(res => res.json())
             .then(data => {
               if (data?.date) {
