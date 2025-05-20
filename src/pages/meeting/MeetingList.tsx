@@ -44,6 +44,7 @@ const MeetingList = () => {
   // MeetingList.tsx の useState に追加
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('info');
   const [editNextOpen, setEditNextOpen] = useState(false);
+  const [userName, setUserName] = useState('');
 
   const [filters, setFilters] = useState({
     title: '',
@@ -108,6 +109,21 @@ const MeetingList = () => {
 
     fetchMeetings();
   }, []);
+
+useEffect(() => {
+  fetch('http://localhost:8000/me', {
+    credentials: 'include',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data?.user?.name) {
+        setUserName(data.user.name);
+      }
+    })
+    .catch((err) => {
+      console.error('ユーザー情報の取得に失敗しました', err);
+    });
+}, []);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -222,6 +238,7 @@ const MeetingList = () => {
         handleUserSettings={handleUserSettings}
         handleLogout={handleLogout}
         anchorEl={anchorEl}
+        userName={userName}
       />
       <Box mb={2}>
         <Stack direction="row" alignItems="center" spacing={2}>

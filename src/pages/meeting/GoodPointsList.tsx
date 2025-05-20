@@ -26,6 +26,7 @@ const GoodPointsList = () => {
   const [goodPoints, setGoodPoints] = useState<GoodPoint[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
   const fetchGoodPoints = async () => {
@@ -51,6 +52,21 @@ const GoodPointsList = () => {
     setMenuOpen(false);
     setAnchorEl(null);
   };
+
+useEffect(() => {
+  fetch('http://localhost:8000/me', {
+    credentials: 'include',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data?.user?.name) {
+        setUserName(data.user.name);
+      }
+    })
+    .catch((err) => {
+      console.error('ユーザー情報の取得に失敗しました', err);
+    });
+}, []);
 
 const handleLogout = async () => {
   try {
@@ -80,6 +96,7 @@ const handleLogout = async () => {
         handleUserSettings={handleUserSettings}
         handleLogout={handleLogout}
         anchorEl={anchorEl}
+        userName={userName}
       />
       <Box my={2}>
         <Stack direction="row" alignItems="center" spacing={2}>

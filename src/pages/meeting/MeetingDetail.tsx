@@ -19,6 +19,7 @@ const MeetingDetail = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     fetch(`http://localhost:8000/meetings/${meetingId}`,{credentials: "include",})
@@ -28,6 +29,21 @@ const MeetingDetail = () => {
         setLoading(false);
       });
   }, [meetingId]);
+
+useEffect(() => {
+  fetch('http://localhost:8000/me', {
+    credentials: 'include',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data?.user?.name) {
+        setUserName(data.user.name);
+      }
+    })
+    .catch((err) => {
+      console.error('ユーザー情報の取得に失敗しました', err);
+    });
+}, []);
 
   const handleSave = () => {
     fetch(`http://localhost:8000/meetings/${meetingId}`, {
@@ -89,6 +105,7 @@ const handleLogout = async () => {
         handleUserSettings={handleUserSettings}
         handleLogout={handleLogout}
         anchorEl={anchorEl}
+        userName={userName}
       />
       <Box mb={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
