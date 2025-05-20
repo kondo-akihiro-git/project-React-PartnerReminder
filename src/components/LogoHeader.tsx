@@ -9,10 +9,11 @@ interface HeaderProps {
   handleUserSettings: () => void;
   handleLogout: () => void;
   anchorEl: HTMLElement | null;
+  userName: string;
 }
 
 
-const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuOpen, handleUserSettings, handleLogout, anchorEl }) => {
+const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuOpen, handleUserSettings, handleLogout, anchorEl,userName }) => {
   const navigate = useNavigate();
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
@@ -33,6 +34,7 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
         />
       </ButtonBase>
       <Stack direction="column" spacing={1} sx={{ flexBasis: '30%' }} alignItems="flex-end">
+        <Box sx={{ mb: 0.5}}>ユーザー：{userName}</Box>
         <Button
           variant='outlined'
           onClick={handleMenuClick}
