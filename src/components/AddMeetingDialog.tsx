@@ -153,13 +153,13 @@ import {
                 src={
                   formData.my_appearance_image_path
                     ? `http://localhost:8000/${formData.my_appearance_image_path}`
-                    : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                    : 'http://localhost:8000/files/no_image/no_image.jpg'
                 }
                 alt="自分の服装"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
-                  target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                  target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
                 }}
                 sx={{
                   width: '100%',
@@ -218,13 +218,13 @@ import {
                 src={
                   formData.meeting_photo
                     ? `http://localhost:8000/${formData.meeting_photo}`
-                    : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                    : 'http://localhost:8000/files/no_image/no_image.jpg'
                 }
                 alt="自分の服装"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
-                  target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                  target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
                 }}
                 sx={{
                   width: '100%',

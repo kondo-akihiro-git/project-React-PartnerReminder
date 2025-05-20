@@ -76,13 +76,13 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               src={
                 editData?.my_appearance_image_path
                   ? `http://localhost:8000/files/${editData.my_appearance_image_path.split('files/')[1]}`
-                  : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  : 'http://localhost:8000/files/no_image/no_image.jpg'
               }
               alt="自分の服装"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
               }}
               sx={{
                 width: '100%',
@@ -168,13 +168,13 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               src={
                 editData?.meeting_photo
                   ? `http://localhost:8000/files/${editData.meeting_photo.split('files/')[1]}`
-                  : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  : 'http://localhost:8000/files/no_image/no_image.jpg'
               }
               alt="デートの背景画像"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
               }}
               sx={{
                 width: '100%',

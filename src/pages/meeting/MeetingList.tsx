@@ -267,7 +267,7 @@ useEffect(() => {
           const selectedIndex = selectedMeetings.indexOf(meeting.id);
           const imageUrl = meeting.image
             ? `http://localhost:8000/${meeting.image}`
-            : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+            : 'http://localhost:8000/files/no_image/no_image.jpg';
 
           return (
             <Box key={meeting.id} position="relative">
