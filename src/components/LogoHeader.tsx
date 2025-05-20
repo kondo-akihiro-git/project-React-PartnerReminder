@@ -1,6 +1,5 @@
-import { Stack, Button, Menu, MenuItem, ButtonBase, Typography, Box } from '@mui/material';
+import { Stack, Button, Menu, MenuItem, ButtonBase, Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
@@ -24,10 +23,10 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           alt="PartnerReminder"
           sx={{
             width: {
-              xs: '45vw', // スマホなどの狭い画面：80vw
-              sm: '40vw', // タブレット程度：60vw
-              md: '35vw', // 中サイズ以上：40vw
-              lg: '30vw', // 広い画面：30vw
+              xs: '45vw', 
+              sm: '40vw', 
+              md: '35vw', 
+              lg: '30vw', 
             },
             objectFit: 'contain',
           }}
@@ -39,10 +38,10 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           onClick={handleMenuClick}
           sx={{
             width: {
-              xs: '35vw', // スマホなどの狭い画面：80vw
-              sm: '33vw', // タブレット程度：60vw
-              md: '31vw', // 中サイズ以上：40vw
-              lg: '29vw', // 広い画面：30vw
+              xs: '35vw',
+              sm: '33vw', 
+              md: '31vw', 
+              lg: '29vw', 
             },
 
             textTransform: 'none',
@@ -61,10 +60,10 @@ const Header: React.FC<HeaderProps> = ({ handleMenuClick, handleMenuClose, menuO
           PaperProps={{
             sx: {
               width: {
-              xs: '35vw', // スマホなどの狭い画面：80vw
-              sm: '33vw', // タブレット程度：60vw
-              md: '31vw', // 中サイズ以上：40vw
-              lg: '29vw', // 広い画面：30vw
+              xs: '35vw', 
+              sm: '33vw', 
+              md: '31vw', 
+              lg: '29vw', 
               },
             },
           }}

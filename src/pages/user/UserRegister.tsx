@@ -6,8 +6,8 @@ import {
   IconButton
 } from "@mui/material";
 import axios from "axios";
-import SnackbarNotification from "../components/SnackbarNotification";
-import LoadingIndicator from "../components/LoadingIndicator";
+import SnackbarNotification from "../../components/SnackbarNotification";
+import LoadingIndicator from "../../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 

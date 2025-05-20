@@ -8,10 +8,10 @@ import {
   Stack,
   Fab,
 } from '@mui/material';
-import Header from '../components/Header';
+import Header from '../../components/LogoHeader';
 import { useNavigate } from 'react-router-dom';
 import ListIcon from '@mui/icons-material/List';
-import { red } from '@mui/material/colors';
+
 
 interface GoodPoint {
   id: number;
@@ -56,7 +56,7 @@ const handleLogout = async () => {
   try {
     const res = await fetch('http://localhost:8000/logout', {
       method: 'POST',
-      credentials: 'include',  // Cookie送信のために必要
+      credentials: 'include', 
     });
     if (!res.ok) {
       throw new Error('ログアウトに失敗しました');
