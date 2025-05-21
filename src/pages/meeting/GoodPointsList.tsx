@@ -22,6 +22,9 @@ interface GoodPoint {
   image: string;
 }
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const GoodPointsList = () => {
   const [goodPoints, setGoodPoints] = useState<GoodPoint[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +33,7 @@ const GoodPointsList = () => {
   const navigate = useNavigate();
 
   const fetchGoodPoints = async () => {
-    const res = await fetch('http://localhost:8000/goodpoints',{credentials: "include"});
+    const res = await fetch(`${BASE_URL}/goodpoints`,{credentials: "include"});
     const data = await res.json();
     // good_point が空文字や改行だけのものを除外
     const validPoints = data.goodpoints.goodpoints.filter((p: GoodPoint) =>
@@ -54,7 +57,7 @@ const GoodPointsList = () => {
   };
 
 useEffect(() => {
-  fetch('http://localhost:8000/me', {
+  fetch(`${BASE_URL}/me`, {
     credentials: 'include',
   })
     .then((res) => res.json())
@@ -70,7 +73,7 @@ useEffect(() => {
 
 const handleLogout = async () => {
   try {
-    const res = await fetch('http://localhost:8000/logout', {
+    const res = await fetch(`${BASE_URL}/logout`, {
       method: 'POST',
       credentials: 'include', 
     });

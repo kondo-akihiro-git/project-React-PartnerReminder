@@ -9,6 +9,9 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import SnackbarNotification from '../../components/SnackbarNotification';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const MeetingDetail = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -22,7 +25,7 @@ const MeetingDetail = () => {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    fetch(`http://localhost:8000/meetings/${meetingId}`,{credentials: "include",})
+    fetch(`${BASE_URL}/meetings/${meetingId}`,{credentials: "include",})
       .then((res) => res.json())
       .then((data) => {
         setMeeting(data.meeting);
@@ -31,7 +34,7 @@ const MeetingDetail = () => {
   }, [meetingId]);
 
 useEffect(() => {
-  fetch('http://localhost:8000/me', {
+  fetch(`${BASE_URL}/me`, {
     credentials: 'include',
   })
     .then((res) => res.json())
@@ -46,7 +49,7 @@ useEffect(() => {
 }, []);
 
   const handleSave = () => {
-    fetch(`http://localhost:8000/meetings/${meetingId}`, {
+    fetch(`${BASE_URL}/meetings/${meetingId}`, {
       method: 'PUT',
       credentials: "include",
       headers: { 'Content-Type': 'application/json' },
@@ -56,7 +59,7 @@ useEffect(() => {
       setOpenEditDialog(false);
   
       // 🔄 更新後のデータを再取得
-      fetch(`http://localhost:8000/meetings/${meetingId}`,{ credentials: "include"})
+      fetch(`${BASE_URL}/meetings/${meetingId}`,{ credentials: "include"})
         .then((res) => res.json())
         .then((data) => {
           setMeeting(data.meeting);
@@ -77,7 +80,7 @@ useEffect(() => {
 
 const handleLogout = async () => {
   try {
-    const res = await fetch('http://localhost:8000/logout', {
+    const res = await fetch(`${BASE_URL}/logout`, {
       method: 'POST',
       credentials: 'include',  // Cookie送信のために必要
     });
@@ -233,14 +236,14 @@ const handleLogout = async () => {
                   component="img"
                   src={
                     meeting.my_appearance_image_path
-                      ? `http://localhost:8000/files/${meeting.my_appearance_image_path.split('files/')[1]}`
-                      : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                      ? `${BASE_URL}/files/${meeting.my_appearance_image_path.split('files/')[1]}`
+                      : `${BASE_URL}/files/no_image/no_image.jpg`
                   }
                   alt="自分の服装"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
-                    target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                    target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
                   }}
                   sx={{
                     width: '100%',
@@ -317,14 +320,14 @@ const handleLogout = async () => {
                   component="img"
                   src={
                     meeting.meeting_photo
-                      ? `http://localhost:8000/files/${meeting.meeting_photo.split('files/')[1]}`
-                      : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                      ? `${BASE_URL}/files/${meeting.meeting_photo.split('files/')[1]}`
+                      : `${BASE_URL}/files/no_image/no_image.jpg`
                   }
                   alt="自分の服装"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
-                    target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                    target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
                   }}
                   sx={{
                     width: '100%',

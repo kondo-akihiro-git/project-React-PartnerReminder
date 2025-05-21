@@ -15,6 +15,9 @@ import UserSetting from './pages/user/UserSetting';
 
 const theme = createTheme();
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const NotFoundRedirect = () => {
   const navigate = useNavigate();
 
@@ -33,7 +36,7 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
     const checkUser = async () => {
       try {
         // CookieにセットされたJWTをサーバーが読むため、axiosはwithCredentials:trueにする
-        await axios.get("http://localhost:8000/me", { withCredentials: true });
+        await axios.get(`${BASE_URL}/me`, { withCredentials: true });
         setIsChecking(false); // 認証成功
       } catch {
         navigate("/login");

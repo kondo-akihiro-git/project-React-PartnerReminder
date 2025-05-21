@@ -31,6 +31,9 @@ interface Meeting {
   image: string | null;
 }
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const MeetingList = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -65,7 +68,7 @@ const MeetingList = () => {
 
 
   const fetchMeetings = async () => {
-    const res = await fetch('http://localhost:8000/meetings',{credentials: "include"});
+    const res = await fetch(`${BASE_URL}/meetings`,{credentials: "include"});
     const data = await res.json();
     const formatted = data.meetings.map((m: any[]) => ({
       id: m[0],
@@ -92,7 +95,7 @@ const MeetingList = () => {
 
     const fetchNextMeeting = async () => {
       try {
-        const res = await fetch('http://localhost:8000/next',{credentials: "include"});
+        const res = await fetch(`${BASE_URL}/next`,{credentials: "include"});
         const data = await res.json();
         if (data?.date) {
           setNextMeetingDateRaw(data.date);
@@ -111,7 +114,7 @@ const MeetingList = () => {
   }, []);
 
 useEffect(() => {
-  fetch('http://localhost:8000/me', {
+  fetch(`${BASE_URL}/me`, {
     credentials: 'include',
   })
     .then((res) => res.json())
@@ -156,7 +159,7 @@ useEffect(() => {
 
   const handleDeleteExecute = async () => {
     try {
-      const response = await fetch('http://localhost:8000/meetings/delete', {
+      const response = await fetch(`${BASE_URL}/meetings/delete`, {
         method: 'POST',
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },
@@ -199,7 +202,7 @@ useEffect(() => {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:8000/logout', {
+      const res = await fetch(`${BASE_URL}/logout`, {
         method: 'POST',
         credentials: 'include',  // Cookie送信のために必要
       });
@@ -266,8 +269,8 @@ useEffect(() => {
         {filteredMeetings.map((meeting) => {
           const selectedIndex = selectedMeetings.indexOf(meeting.id);
           const imageUrl = meeting.image
-            ? `http://localhost:8000/${meeting.image}`
-            : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+            ? `${BASE_URL}/${meeting.image}`
+            : `${BASE_URL}/files/no_image/no_image.jpg`;
 
           return (
             <Box key={meeting.id} position="relative">
@@ -514,7 +517,7 @@ useEffect(() => {
           if(success){
           fetchMeetings();
           // 次回日付も再取得
-          fetch('http://localhost:8000/next',{credentials: "include"})
+          fetch(`${BASE_URL}/next`,{credentials: "include"})
             .then(res => res.json())
             .then(data => {
               if (data?.date) {

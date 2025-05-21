@@ -7,6 +7,8 @@ interface DialogProps {
   setEditData: React.Dispatch<React.SetStateAction<any>>;
   onSave: () => void;
 }
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
 const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, setEditData, onSave }) => {
   return (
@@ -75,14 +77,14 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               component="img"
               src={
                 editData?.my_appearance_image_path
-                  ? `http://localhost:8000/files/${editData.my_appearance_image_path.split('files/')[1]}`
-                  : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  ? `${BASE_URL}/files/${editData.my_appearance_image_path.split('files/')[1]}`
+                  : `${BASE_URL}/files/no_image/no_image.jpg`
               }
               alt="自分の服装"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
               }}
               sx={{
                 width: '100%',
@@ -106,7 +108,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                     if (file) {
                       const formData = new FormData();
                       formData.append('file', file);
-                      fetch(`http://localhost:8000/upload-image`, {
+                      fetch(`${BASE_URL}/upload-image`, {
                         method: 'POST',
                         body: formData,
                       })
@@ -167,14 +169,14 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               component="img"
               src={
                 editData?.meeting_photo
-                  ? `http://localhost:8000/files/${editData.meeting_photo.split('files/')[1]}`
-                  : 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg'
+                  ? `${BASE_URL}/files/${editData.meeting_photo.split('files/')[1]}`
+                  : `${BASE_URL}/files/no_image/no_image.jpg`
               }
               alt="デートの背景画像"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg';
+                target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
               }}
               sx={{
                 width: '100%',
@@ -199,7 +201,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                     if (file) {
                       const formData = new FormData();
                       formData.append('file', file);
-                      fetch(`http://localhost:8000/upload-image`, {
+                      fetch(`${BASE_URL}/upload-image`, {
                         method: 'POST',
                         body: formData,
                       })
