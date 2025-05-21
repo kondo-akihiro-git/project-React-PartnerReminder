@@ -10,12 +10,17 @@ import {
     Typography,
   } from '@mui/material';
   import { useState } from 'react';
+
   
   interface AddDialogProps {
     open: boolean;
     onClose: () => void;
     onSaveSuccess: () => void;
   }
+
+
+  // ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
   
   const AddDialog: React.FC<AddDialogProps> = ({ open, onClose,onSaveSuccess }) => {
     const [formData, setFormData] = useState<any>({
@@ -37,7 +42,7 @@ import {
         return;
       }
   
-      const res = await fetch('http://localhost:8000/meetings', {
+      const res = await fetch(`${BASE_URL}/meetings`, {
         method: 'POST',
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +62,7 @@ import {
     const handleMyImageUpload = async (file: File) => {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await fetch(`http://localhost:8000/upload-image`, {
+      const res = await fetch(`${BASE_URL}/upload-image`, {
         method: 'POST',
         body: fd,
       });
@@ -71,7 +76,7 @@ import {
     const handleBackImageUpload = async (file: File) => {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await fetch(`http://localhost:8000/upload-image`, {
+      const res = await fetch(`${BASE_URL}/upload-image`, {
         method: 'POST',
         body: fd,
       });
@@ -152,14 +157,14 @@ import {
                 component="img"
                 src={
                   formData.my_appearance_image_path
-                    ? `http://localhost:8000/${formData.my_appearance_image_path}`
-                    : 'http://localhost:8000/files/no_image/no_image.jpg'
+                    ? `${BASE_URL}/${formData.my_appearance_image_path}`
+                    : `${BASE_URL}/files/no_image/no_image.jpg`
                 }
                 alt="自分の服装"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
-                  target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
+                  target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
                 }}
                 sx={{
                   width: '100%',
@@ -217,14 +222,14 @@ import {
                 component="img"
                 src={
                   formData.meeting_photo
-                    ? `http://localhost:8000/${formData.meeting_photo}`
-                    : 'http://localhost:8000/files/no_image/no_image.jpg'
+                    ? `${BASE_URL}/${formData.meeting_photo}`
+                    : `${BASE_URL}/files/no_image/no_image.jpg`
                 }
                 alt="自分の服装"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
-                  target.src = 'http://localhost:8000/files/no_image/no_image.jpg';
+                  target.src = `${BASE_URL}/files/no_image/no_image.jpg`;
                 }}
                 sx={{
                   width: '100%',

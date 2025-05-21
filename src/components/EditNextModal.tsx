@@ -17,6 +17,9 @@ interface EditNextModalProps {
   currentDate: string;
 }
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: EditNextModalProps) => {
   const [newDate, setNewDate] = useState(initialDate);
 
@@ -37,7 +40,7 @@ const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: Ed
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch('http://localhost:8000/next', {
+      const res = await fetch(`${BASE_URL}/next`, {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

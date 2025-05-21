@@ -11,6 +11,9 @@ import LoadingIndicator from "../../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const UserSetting: React.FC = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -54,7 +57,7 @@ const UserSetting: React.FC = () => {
   useEffect(() => {
   const fetchCurrentUser = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/me", { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/me`, { withCredentials: true });
       setUserId(res.data.user.id);
       setForm({
         name: res.data.user.name || "",
@@ -108,7 +111,7 @@ const UserSetting: React.FC = () => {
     if (userId === null) return;
     setShowLoading(true);
     try {
-      await axios.put(`http://localhost:8000/users/${userId}`, {
+      await axios.put(`${BASE_URL}/users/${userId}`, {
         name: form.name,
         phone: form.phone,
         password: form.password,

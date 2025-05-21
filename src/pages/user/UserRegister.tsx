@@ -11,6 +11,9 @@ import LoadingIndicator from "../../components/LoadingIndicator";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
@@ -67,7 +70,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
 
   const sendVerificationEmail = async () => {
     try {
-      await axios.post("http://localhost:8000/send_verification_code", { email: form.email });
+      await axios.post(`${BASE_URL}/send_verification_code`, { email: form.email });
       setForm(prev => ({ ...prev, code: "" }));
       setStep("verify");
       setSnackbar({ open: true, message: "認証コードを送信しました", severity: "success" });
@@ -78,7 +81,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
 
   const handleRegister = async () => {
     try {
-      await axios.post("http://localhost:8000/register", form);
+      await axios.post(`${BASE_URL}/register`, form);
       setSnackbar({ open: true, message: "登録に成功しました", severity: "success" });
       setRedirectToLogin(true);
     } catch {

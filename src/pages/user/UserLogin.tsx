@@ -8,6 +8,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +27,7 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
 };
 
 const handleLogin = async () => {
-  const res = await fetch('http://localhost:8000/login', {
+  const res = await fetch(`${BASE_URL}/login`, {
     method: 'POST',
     credentials: "include",
     headers: { 'Content-Type': 'application/json' },

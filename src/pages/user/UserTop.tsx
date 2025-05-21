@@ -2,6 +2,10 @@ import { Box, Stack, Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { JSX, useEffect, useState } from 'react';
 
+
+// ベースURLを環境変数から取得。なければlocalhostを使う
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 const Top = () => {
   const navigate = useNavigate();
   const [hearts, setHearts] = useState<JSX.Element[]>([]);
