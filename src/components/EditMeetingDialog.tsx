@@ -77,7 +77,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               component="img"
               src={
                 editData?.my_appearance_image_path
-                  ? `${BASE_URL}/files/${editData.my_appearance_image_path.split('files/')[1]}`
+                  ? `${editData.my_appearance_image_path}`
                   : `${BASE_URL}/files/no_image/no_image.jpg`
               }
               alt="自分の服装"
@@ -114,7 +114,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                       })
                         .then((res) => res.json())
                         .then((data) => {
-                          setEditData({ ...editData, my_appearance_image_path: data.filename });
+                          setEditData({ ...editData, my_appearance_image_path: data.url });
                         });
                     }
                   }}
@@ -169,7 +169,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               component="img"
               src={
                 editData?.meeting_photo
-                  ? `${BASE_URL}/files/${editData.meeting_photo.split('files/')[1]}`
+                  ? `${editData.meeting_photo}`
                   : `${BASE_URL}/files/no_image/no_image.jpg`
               }
               alt="デート写真"
@@ -207,7 +207,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                       })
                         .then((res) => res.json())
                         .then((data) => {
-                          setEditData({ ...editData, meeting_photo: data.filename });
+                          setEditData({ ...editData, meeting_photo: data.url });
                         });
                     }
                   }}

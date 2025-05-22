@@ -5,6 +5,7 @@ import { JSX, useEffect, useState } from 'react';
 
 // ベースURLを環境変数から取得。なければlocalhostを使う
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+console.log("BASE_URL", BASE_URL)
 
 const Top = () => {
   const navigate = useNavigate();

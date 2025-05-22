@@ -236,7 +236,7 @@ const handleLogout = async () => {
                   component="img"
                   src={
                     meeting.my_appearance_image_path
-                      ? `${BASE_URL}/files/${meeting.my_appearance_image_path.split('files/')[1]}`
+                      ? `${meeting.my_appearance_image_path}`
                       : `${BASE_URL}/files/no_image/no_image.jpg`
                   }
                   alt="自分の服装"
@@ -320,7 +320,7 @@ const handleLogout = async () => {
                   component="img"
                   src={
                     meeting.meeting_photo
-                      ? `${BASE_URL}/files/${meeting.meeting_photo.split('files/')[1]}`
+                      ? `${meeting.meeting_photo}`
                       : `${BASE_URL}/files/no_image/no_image.jpg`
                   }
                   alt="自分の服装"

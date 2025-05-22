@@ -283,7 +283,7 @@ const fetchNextMeeting = async () => {
         {filteredMeetings.map((meeting) => {
           const selectedIndex = selectedMeetings.indexOf(meeting.id);
           const imageUrl = meeting.image
-            ? `${BASE_URL}/${meeting.image}`
+            ? `${meeting.image}`
             : `${BASE_URL}/files/no_image/no_image.jpg`;
 
           return (

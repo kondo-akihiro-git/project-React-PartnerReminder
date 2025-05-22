@@ -136,7 +136,7 @@ const handleLogout = async () => {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundImage: `url(${BASE_URL}/${point.image})`,
+                backgroundImage: `url(${point.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

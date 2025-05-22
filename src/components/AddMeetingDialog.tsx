@@ -69,7 +69,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
       const data = await res.json();
       setFormData((prev: any) => ({
         ...prev,
-        my_appearance_image_path: data.filename,
+        my_appearance_image_path: data.url,
       }));
     };
 
@@ -83,7 +83,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
       const data = await res.json();
       setFormData((prev: any) => ({
         ...prev,
-        meeting_photo: data.filename,
+        meeting_photo: data.url,
       }));
     };
   
@@ -157,7 +157,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
                 component="img"
                 src={
                   formData.my_appearance_image_path
-                    ? `${BASE_URL}/${formData.my_appearance_image_path}`
+                    ? `${formData.my_appearance_image_path}`
                     : `${BASE_URL}/files/no_image/no_image.jpg`
                 }
                 alt="自分の服装"
@@ -222,7 +222,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
                 component="img"
                 src={
                   formData.meeting_photo
-                    ? `${BASE_URL}/${formData.meeting_photo}`
+                    ? `${formData.meeting_photo}`
                     : `${BASE_URL}/files/no_image/no_image.jpg`
                 }
                 alt="デート写真"
