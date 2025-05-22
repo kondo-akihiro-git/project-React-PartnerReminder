@@ -203,7 +203,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
               multiline
             />
 
-            <Typography variant="caption">自分の服装</Typography>
+            <Typography variant="caption">デート写真</Typography>
             <Box
               sx={{
                 width: '100%',
@@ -225,7 +225,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
                     ? `${BASE_URL}/${formData.meeting_photo}`
                     : `${BASE_URL}/files/no_image/no_image.jpg`
                 }
-                alt="自分の服装"
+                alt="デート写真"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
@@ -240,7 +240,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
               />
             </Box>
             <Button variant="outlined" component="label" color="inherit">
-              自分の服装の画像をアップロード
+              デート写真をアップロード
               <input
                 type="file"
                 accept="image/*"

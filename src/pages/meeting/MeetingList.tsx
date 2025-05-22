@@ -68,7 +68,7 @@ const MeetingList = () => {
 
 
   const fetchMeetings = async () => {
-    const res = await fetch(`${BASE_URL}/meetings`,{credentials: "include"});
+    const res = await fetch(`${BASE_URL}/meetings`, { credentials: "include" });
     const data = await res.json();
     const formatted = data.meetings.map((m: any[]) => ({
       id: m[0],
@@ -95,7 +95,7 @@ const MeetingList = () => {
 
     const fetchNextMeeting = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/next`,{credentials: "include"});
+        const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
         const data = await res.json();
         if (data?.date) {
           setNextMeetingDateRaw(data.date);
@@ -113,20 +113,20 @@ const MeetingList = () => {
     fetchMeetings();
   }, []);
 
-useEffect(() => {
-  fetch(`${BASE_URL}/me`, {
-    credentials: 'include',
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data?.user?.name) {
-        setUserName(data.user.name);
-      }
+  useEffect(() => {
+    fetch(`${BASE_URL}/me`, {
+      credentials: 'include',
     })
-    .catch((err) => {
-      console.error('ユーザー情報の取得に失敗しました', err);
-    });
-}, []);
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user?.name) {
+          setUserName(data.user.name);
+        }
+      })
+      .catch((err) => {
+        console.error('ユーザー情報の取得に失敗しました', err);
+      });
+  }, []);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -396,6 +396,15 @@ useEffect(() => {
           );
         })}
 
+        {/* カードが空の場合のメッセージ */}
+        {filteredMeetings.length === 0 && (
+          <Box mt={4} textAlign="center">
+            <Typography variant="body1" color="textSecondary">
+              デート情報はまだ登録されていません
+            </Typography>
+          </Box>
+        )}
+
       </Box>
 
       {!isDeleteMode && (
@@ -514,26 +523,26 @@ useEffect(() => {
         onClose={handleEditNextClose}
 
         onUpdated={(success) => {
-          if(success){
-          fetchMeetings();
-          // 次回日付も再取得
-          fetch(`${BASE_URL}/next`,{credentials: "include"})
-            .then(res => res.json())
-            .then(data => {
-              if (data?.date) {
-                const formatted = formatDateWithWeekday(data.date);
-                setNextMeetingDate(formatted);
-                setSnackbarMessage('次回の予定日を更新しました');
-                setSnackbarSeverity('success');
-                setSnackbarOpen(true);
-              }else{
+          if (success) {
+            fetchMeetings();
+            // 次回日付も再取得
+            fetch(`${BASE_URL}/next`, { credentials: "include" })
+              .then(res => res.json())
+              .then(data => {
+                if (data?.date) {
+                  const formatted = formatDateWithWeekday(data.date);
+                  setNextMeetingDate(formatted);
+                  setSnackbarMessage('次回の予定日を更新しました');
+                  setSnackbarSeverity('success');
+                  setSnackbarOpen(true);
+                } else {
 
-              }
-            });
-          }else{
-                setSnackbarMessage('更新に失敗しました');
-                setSnackbarSeverity('error');
-                setSnackbarOpen(true);
+                }
+              });
+          } else {
+            setSnackbarMessage('更新に失敗しました');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
           }
         }}
         initialDate={nextMeetingDateRaw}

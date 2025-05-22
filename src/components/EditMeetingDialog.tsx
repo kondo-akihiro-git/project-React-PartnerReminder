@@ -149,7 +149,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             multiline
           />
 
-          <Typography variant="caption">デートの背景画像</Typography>
+          <Typography variant="caption">デートの写真</Typography>
           <Box
             sx={{
               width: '100%',
@@ -172,7 +172,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                   ? `${BASE_URL}/files/${editData.meeting_photo.split('files/')[1]}`
                   : `${BASE_URL}/files/no_image/no_image.jpg`
               }
-              alt="デートの背景画像"
+              alt="デート写真"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
@@ -191,7 +191,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             <Box sx={{ flex: 5 }}>
 
               <Button variant="outlined" component="label" color='inherit' fullWidth>
-                デートの背景画像を変更する
+                デートの写真を変更する
                 <input
                   type="file"
                   accept="image/*"

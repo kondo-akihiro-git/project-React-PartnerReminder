@@ -136,7 +136,7 @@ const handleLogout = async () => {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundImage: `url(http://localhost:8000/${point.image})`,
+                backgroundImage: `url(${BASE_URL}/${point.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -168,6 +168,15 @@ const handleLogout = async () => {
 
 
       ))}
+
+        {/* カードが空の場合のメッセージ */}
+        {goodPoints.length === 0 && (
+          <Box mt={4} textAlign="center">
+            <Typography variant="body1" color="textSecondary">
+              彼女の良いところ情報がまだ登録されていません
+            </Typography>
+          </Box>
+        )}
 
 
       <Fab
