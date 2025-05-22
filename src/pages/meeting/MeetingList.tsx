@@ -93,21 +93,35 @@ const MeetingList = () => {
   useEffect(() => {
 
 
-    const fetchNextMeeting = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
-        const data = await res.json();
-        if (data?.date) {
-          setNextMeetingDateRaw(data.date);
-          const formattedDate = formatDateWithWeekday(data.date);
-          setNextMeetingDate(formattedDate);  // フォーマット済みで返ってくる想定
-        }
-      } catch (err) {
-        console.error('次の予定の取得に失敗しました', err);
+const fetchNextMeeting = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        // 次の予定が存在しない（正常なケース）
+        console.warn('次の予定は存在しません');
         setNextMeetingDateRaw(null);
         setNextMeetingDate('---');
+        return;
+      } else {
+        throw new Error(`サーバーエラー: ${res.status}`);
       }
-    };
+    }
+
+    const data = await res.json();
+    if (data?.date) {
+      setNextMeetingDateRaw(data.date);
+      const formattedDate = formatDateWithWeekday(data.date);
+      setNextMeetingDate(formattedDate);
+    }
+  } catch (err) {
+    console.error('次の予定の取得に失敗しました', err);
+    setNextMeetingDateRaw(null);
+    setNextMeetingDate('---');
+  }
+};
+
     fetchNextMeeting();
 
     fetchMeetings();
@@ -398,7 +412,7 @@ const MeetingList = () => {
 
         {/* カードが空の場合のメッセージ */}
         {filteredMeetings.length === 0 && (
-          <Box mt={4} textAlign="center">
+          <Box mt={4} textAlign="center" width="100vw">
             <Typography variant="body1" color="textSecondary">
               デート情報はまだ登録されていません
             </Typography>
