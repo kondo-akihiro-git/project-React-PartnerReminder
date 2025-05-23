@@ -11,6 +11,8 @@ import {
 import Header from '../../components/LogoHeader';
 import { useNavigate } from 'react-router-dom';
 import ListIcon from '@mui/icons-material/List';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 interface GoodPoint {
@@ -30,7 +32,12 @@ const GoodPointsList = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [userName, setUserName] = useState('');
+  const [menuFabOpen, setMenuFabOpen] = useState(false);
   const navigate = useNavigate();
+
+  const toggleMenuFab = () => {
+    setMenuFabOpen((prev) => !prev);
+  };
 
   const fetchGoodPoints = async () => {
     const res = await fetch(`${BASE_URL}/goodpoints`,{credentials: "include"});
@@ -173,15 +180,25 @@ const handleLogout = async () => {
         {goodPoints.length === 0 && (
           <Box mt={4} textAlign="center">
             <Typography variant="body1" color="textSecondary">
-              彼女の良いところ情報がまだ登録されていません
+              まだ登録されていません
             </Typography>
           </Box>
         )}
 
+      <Fab
+        color="inherit"
+        sx={{ position: 'fixed', bottom: 40, right: 20 }}
+        onClick={toggleMenuFab}
+      >
+        {menuFabOpen ? <CloseIcon /> : <MenuIcon />}
+      </Fab>
+
+      {menuFabOpen && (
+        <>
 
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width: 200,backgroundColor: 'white',
+        sx={{ position: 'fixed', bottom: 110, right: 20, width: 200,backgroundColor: 'white',
     color: 'black', // アイコンの色を黒に（白背景のため）
     '&:hover': {
       backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -192,6 +209,10 @@ const handleLogout = async () => {
         <ListIcon sx={{ mr: 1 }} />
         デート一覧
       </Fab>
+
+        </>
+      )}
+
     </Box>
   );
 };

@@ -8,6 +8,8 @@ import Header from '../../components/LogoHeader';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import SnackbarNotification from '../../components/SnackbarNotification';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 // ベースURLを環境変数から取得。なければlocalhostを使う
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
@@ -23,9 +25,15 @@ const MeetingDetail = () => {
   const [menuOpen, setMenuOpen] = useState(false);  // メニューの開閉状態を管理
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [userName, setUserName] = useState('');
+  const [menuFabOpen, setMenuFabOpen] = useState(false); // メニューFAB開閉用
+
+  const toggleMenuFab = () => {
+    setMenuFabOpen((prev) => !prev);
+  };
+
 
   useEffect(() => {
-    fetch(`${BASE_URL}/meetings/${meetingId}`,{credentials: "include",})
+    fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include", })
       .then((res) => res.json())
       .then((data) => {
         setMeeting(data.meeting);
@@ -33,20 +41,20 @@ const MeetingDetail = () => {
       });
   }, [meetingId]);
 
-useEffect(() => {
-  fetch(`${BASE_URL}/me`, {
-    credentials: 'include',
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data?.user?.name) {
-        setUserName(data.user.name);
-      }
+  useEffect(() => {
+    fetch(`${BASE_URL}/me`, {
+      credentials: 'include',
     })
-    .catch((err) => {
-      console.error('ユーザー情報の取得に失敗しました', err);
-    });
-}, []);
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user?.name) {
+          setUserName(data.user.name);
+        }
+      })
+      .catch((err) => {
+        console.error('ユーザー情報の取得に失敗しました', err);
+      });
+  }, []);
 
   const handleSave = () => {
     fetch(`${BASE_URL}/meetings/${meetingId}`, {
@@ -57,16 +65,16 @@ useEffect(() => {
     }).then(() => {
       setSnackbarOpen(true);
       setOpenEditDialog(false);
-  
+
       // 🔄 更新後のデータを再取得
-      fetch(`${BASE_URL}/meetings/${meetingId}`,{ credentials: "include"})
+      fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
           setMeeting(data.meeting);
         });
     });
   };
-  
+
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -78,20 +86,20 @@ useEffect(() => {
     setAnchorEl(null);
   };
 
-const handleLogout = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/logout`, {
-      method: 'POST',
-      credentials: 'include',  // Cookie送信のために必要
-    });
-    if (!res.ok) {
-      throw new Error('ログアウトに失敗しました');
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include',  // Cookie送信のために必要
+      });
+      if (!res.ok) {
+        throw new Error('ログアウトに失敗しました');
+      }
+      navigate('/login');
+    } catch (error) {
+      navigate('/login');
     }
-    navigate('/login');
-  } catch (error) {
-    navigate('/login');
-  }
-};
+  };
   const handleUserSettings = () => {
     navigate('/usersetting');
   };
@@ -127,7 +135,7 @@ const handleLogout = async () => {
             }}>
               <TextField
                 label="タイトル"
-        value={meeting.title}
+                value={meeting.title}
                 fullWidth
                 InputProps={{
                   readOnly: true,
@@ -342,48 +350,68 @@ const handleLogout = async () => {
           </Stack>
         </CardContent>
       </Card>
+
       <Fab
         color="inherit"
-        sx={{ position: 'fixed', bottom: 40, right: 20, width:200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
-        variant="extended"
-        onClick={() => navigate('/meetings')}
+        sx={{ position: 'fixed', bottom: 40, right: 20 }}
+        onClick={toggleMenuFab}
       >
-        <ListIcon sx={{ mr: 1 }} />
-        デート一覧
+        {menuFabOpen ? <CloseIcon /> : <MenuIcon />}
       </Fab>
-      <Fab
-        color="inherit"
-        sx={{ position: 'fixed', bottom: 110, right: 20, width:200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
-        variant="extended"
-        onClick={() => {
-          setEditData(meeting);
-          setOpenEditDialog(true);
-        }}
-      >
-        <EditIcon sx={{ mr: 1 }} />
-        デート編集
-      </Fab>
-            <Fab
-              color="inherit"
-              sx={{ position: 'fixed', bottom: 180, right: 20, width:200,backgroundColor: 'white',
-    color: 'black', // アイコンの色を黒に（白背景のため）
-    '&:hover': {
-      backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
-    }, }}
-              variant="extended"
-              onClick={() => navigate('/goodpoints')}
-            >
-              <ThumbUpOffAltIcon sx={{ mr: 1 }} />
-              良いところ一覧
-            </Fab>
+
+      {menuFabOpen && (
+        <>
+
+          <Fab
+            color="inherit"
+            sx={{
+              position: 'fixed', bottom: 110, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
+            variant="extended"
+            onClick={() => navigate('/meetings')}
+          >
+            <ListIcon sx={{ mr: 1 }} />
+            デート一覧
+          </Fab>
+          <Fab
+            color="inherit"
+            sx={{
+              position: 'fixed', bottom: 180, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
+            variant="extended"
+            onClick={() => {
+              setEditData(meeting);
+              setOpenEditDialog(true);
+            }}
+          >
+            <EditIcon sx={{ mr: 1 }} />
+            デート編集
+          </Fab>
+          <Fab
+            color="inherit"
+            sx={{
+              position: 'fixed', bottom: 250, right: 20, width: 200, backgroundColor: 'white',
+              color: 'black', // アイコンの色を黒に（白背景のため）
+              '&:hover': {
+                backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
+              },
+            }}
+            variant="extended"
+            onClick={() => navigate('/goodpoints')}
+          >
+            <ThumbUpOffAltIcon sx={{ mr: 1 }} />
+            良いところ一覧
+          </Fab>
+        </>
+      )}
 
       <EditMeetingDialog
         open={openEditDialog}

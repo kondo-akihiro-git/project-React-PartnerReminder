@@ -1,4 +1,10 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Stack, Button, Box, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 interface DialogProps {
   open: boolean;
@@ -29,12 +35,30 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
               onChange={(e) => setEditData({ ...editData, location: e.target.value })}
               fullWidth
             />
-            <TextField
+            {/* <TextField
               label="日付"
               value={editData?.date}
               onChange={(e) => setEditData({ ...editData, date: e.target.value })}
               fullWidth
-            />
+            /> */}
+<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
+  <DatePicker
+    label="日付"
+    format="MM/DD"
+    value={editData?.date ? dayjs(editData.date) : null}
+    onChange={(newValue) => {
+      const formatted = newValue ? newValue.format('YYYY-MM-DD') : '';
+      setEditData({ ...editData, date: formatted });
+    }}
+    slotProps={{
+      textField: {
+        required: true,
+        fullWidth: true,
+      },
+    }}
+  />
+</LocalizationProvider>
+
           </Stack>
           <TextField
             label="イベント"
@@ -98,7 +122,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
           <Stack direction="row">
             <Box sx={{ flex: 5 }}>
               <Button variant="outlined" component="label" color='inherit' fullWidth>
-                自分の服装の画像を変更する
+                服装のアップロード
                 <input
                   type="file"
                   accept="image/*"
@@ -128,7 +152,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                 onClick={() => setEditData({ ...editData, my_appearance_image_path: '' })}
                 fullWidth
               >
-                画像をクリア
+                <CloseIcon/>
               </Button>
             </Box>
           </Stack>
@@ -191,7 +215,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
             <Box sx={{ flex: 5 }}>
 
               <Button variant="outlined" component="label" color='inherit' fullWidth>
-                デートの写真を変更する
+                デート写真のアップロード
                 <input
                   type="file"
                   accept="image/*"
@@ -223,7 +247,7 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                 onClick={() => setEditData({ ...editData, meeting_photo: '' })}
                 fullWidth
               >
-                画像をクリア
+                <CloseIcon/>
               </Button>
 
             </Box>
@@ -233,10 +257,10 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 4, py: 3, justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onClose} color="inherit" variant="text" size="large" sx={{ minWidth: 160, py: 1.2 }}>
+        <Button onClick={onClose} color="inherit" variant="text" size="large" sx={{ py: 1.2 }}>
           キャンセル
         </Button>
-        <Button variant="contained" color="inherit" size="large" onClick={onSave} sx={{ minWidth: 160, py: 1.2 }}>
+        <Button variant="contained" color="inherit" size="large" onClick={onSave} sx={{ py: 1.2 }}>
           更新
         </Button>
       </DialogActions>

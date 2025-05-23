@@ -21,6 +21,8 @@ import SearchBar from '../../components/SearchBar';
 import { useMemo } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EditNextModal from '../../components/EditNextModal';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 interface Meeting {
@@ -56,7 +58,13 @@ const MeetingList = () => {
   });
   const [nextMeetingDate, setNextMeetingDate] = useState<string>('---');
   const [nextMeetingDateRaw, setNextMeetingDateRaw] = useState<string | null>(null);
+    // 新たにメニュー展開用のuseState
+  const [menuFabOpen, setMenuFabOpen] = useState(false);
 
+  // メニューFabのトグル
+  const toggleMenuFab = () => {
+    setMenuFabOpen((prev) => !prev);
+  };
 
   const handleEditNextOpen = () => {
     setEditNextOpen(true);
@@ -93,34 +101,34 @@ const MeetingList = () => {
   useEffect(() => {
 
 
-const fetchNextMeeting = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
+    const fetchNextMeeting = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
 
-    if (!res.ok) {
-      if (res.status === 404) {
-        // 次の予定が存在しない（正常なケース）
-        console.warn('次の予定は存在しません');
+        if (!res.ok) {
+          if (res.status === 404) {
+            // 次の予定が存在しない（正常なケース）
+            console.warn('次の予定は存在しません');
+            setNextMeetingDateRaw(null);
+            setNextMeetingDate('---');
+            return;
+          } else {
+            throw new Error(`サーバーエラー: ${res.status}`);
+          }
+        }
+
+        const data = await res.json();
+        if (data?.date) {
+          setNextMeetingDateRaw(data.date);
+          const formattedDate = formatDateWithWeekday(data.date);
+          setNextMeetingDate(formattedDate);
+        }
+      } catch (err) {
+        console.error('次の予定の取得に失敗しました', err);
         setNextMeetingDateRaw(null);
         setNextMeetingDate('---');
-        return;
-      } else {
-        throw new Error(`サーバーエラー: ${res.status}`);
       }
-    }
-
-    const data = await res.json();
-    if (data?.date) {
-      setNextMeetingDateRaw(data.date);
-      const formattedDate = formatDateWithWeekday(data.date);
-      setNextMeetingDate(formattedDate);
-    }
-  } catch (err) {
-    console.error('次の予定の取得に失敗しました', err);
-    setNextMeetingDateRaw(null);
-    setNextMeetingDate('---');
-  }
-};
+    };
 
     fetchNextMeeting();
 
@@ -269,164 +277,182 @@ const fetchNextMeeting = async () => {
 
       <SearchBar filters={filters} onChange={handleFilterChange} onClear={handleClear} />
 
-      {/* Meeting Cards Grid */}
-      <Box
-        display="grid"
-        gridTemplateColumns={{
-          xs: 'repeat(2, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
-        }}
-        gap={2}
-        mt={3}
-      >
-        {filteredMeetings.map((meeting) => {
-          const selectedIndex = selectedMeetings.indexOf(meeting.id);
-          const imageUrl = meeting.image
-            ? `${meeting.image}`
-            : `${BASE_URL}/files/no_image/no_image.jpg`;
+      {filteredMeetings.length > 0 ? (
 
-          return (
-            <Box key={meeting.id} position="relative">
-              <Card
-                sx={{
-                  m: 1,
-                  height: 200,
-                  cursor: isDeleteMode ? 'pointer' : 'default',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                  backgroundColor: selectedMeetings.includes(meeting.id)
-                    ? 'rgba(0, 0, 0, 0.1)'
-                    : 'transparent',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  // 背景画像（擬似要素）
-                  '::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    opacity: 0.6,
-                    zIndex: 0,
-                  },
-                  // 前面テキストを上に表示するためにzIndexを上げる
-                  '& > *': {
+
+        <Box
+          display="grid"
+          gridTemplateColumns={{
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+          }}
+          gap={2}
+          mt={3}
+        >
+          {filteredMeetings.map((meeting) => {
+            const selectedIndex = selectedMeetings.indexOf(meeting.id);
+            const imageUrl = meeting.image
+              ? `${meeting.image}`
+              : `${BASE_URL}/files/no_image/no_image.jpg`;
+
+            return (
+              <Box key={meeting.id} position="relative">
+                <Card
+                  sx={{
+                    m: 1,
+                    height: 200,
+                    cursor: isDeleteMode ? 'pointer' : 'default',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
+                    backgroundColor: selectedMeetings.includes(meeting.id)
+                      ? 'rgba(0, 0, 0, 0.1)'
+                      : 'transparent',
                     position: 'relative',
-                    zIndex: 1,
-                  },
-                }}
-                onClick={() => handleCardClick(meeting.id)}
-              >
-                <Box
-                  m={{
-                    xs: 4, // スマホなどの小さい画面
-                    sm: 4, // タブレットなどの中サイズ
-                    md: 6, // デスクトップなどの通常サイズ以上
+                    overflow: 'hidden',
+                    // 背景画像（擬似要素）
+                    '::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: `url(${imageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      opacity: 0.6,
+                      zIndex: 0,
+                    },
+                    // 前面テキストを上に表示するためにzIndexを上げる
+                    '& > *': {
+                      position: 'relative',
+                      zIndex: 1,
+                    },
                   }}
+                  onClick={() => handleCardClick(meeting.id)}
                 >
-                  {/* タイトル */}
-                  <Box>
-                    <Typography
+                  <Box
+                    m={{
+                      xs: 4, // スマホなどの小さい画面
+                      sm: 4, // タブレットなどの中サイズ
+                      md: 6, // デスクトップなどの通常サイズ以上
+                    }}
+                  >
+                    {/* タイトル */}
+                    <Box>
+                      <Typography
 
-                      fontWeight="bold"
-                      sx={{
+                        fontWeight="bold"
+                        sx={{
 
-                        fontSize: {
-                          xs: '1.2rem', // スマホ
-                          sm: '1.3rem', // タブレット
-                          md: '1.4em',   // 通常画面
-                        },
-                        color: "white",
-                        textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
-                      }}
-                    >
-                      {meeting.title || 'タイトルなし'}
-                    </Typography>
+                          fontSize: {
+                            xs: '1.2rem', // スマホ
+                            sm: '1.3rem', // タブレット
+                            md: '1.4em',   // 通常画面
+                          },
+                          color: "white",
+                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                        }}
+                      >
+                        {meeting.title || 'タイトルなし'}
+                      </Typography>
+                    </Box>
+
+                    <CardContent sx={{ pl: 0 }}>
+                      {/* 場所 */}
+                      <Box mt={1}>
+                        <Typography
+                          variant="body1"
+                          fontWeight="bold"
+                          sx={{
+                            color: "white",
+                            textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          }}
+                        >
+                          {meeting.location}
+                        </Typography>
+                      </Box>
+
+                      {/* 日付 */}
+                      <Box mt={0.1}>
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          sx={{
+                            color: "white",
+                            textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
+                          }}
+                        >
+                          {meeting.date}
+                        </Typography>
+                      </Box>
+                    </CardContent>
                   </Box>
 
-                  <CardContent sx={{ pl: 0 }}>
-                    {/* 場所 */}
-                    <Box mt={1}>
-                      <Typography
-                        variant="body1"
-                        fontWeight="bold"
-                        sx={{
-                          color: "white",
-                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
-                        }}
-                      >
-                        {meeting.location}
-                      </Typography>
-                    </Box>
 
-                    {/* 日付 */}
-                    <Box mt={0.1}>
-                      <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        sx={{
-                          color: "white",
-                          textShadow: "1px 1px 15px gray,1px 1px 15px gray,1px 1px 15px gray"
-                        }}
-                      >
-                        {meeting.date}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Box>
+                </Card>
 
+                {isDeleteMode && selectedIndex !== -1 && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: -10,
+                      right: -10,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      backgroundColor: 'gray',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      fontSize: '0.875rem',
+                      zIndex: 10,
+                      boxShadow: 3,
+                    }}
+                  >
+                    {selectedIndex + 1}
+                  </Box>
+                )}
+              </Box>
+            );
+          })}
+        </Box>
 
-              </Card>
+      ) : (
 
-              {isDeleteMode && selectedIndex !== -1 && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: -10,
-                    right: -10,
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    backgroundColor: 'gray',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '0.875rem',
-                    zIndex: 10,
-                    boxShadow: 3,
-                  }}
-                >
-                  {selectedIndex + 1}
-                </Box>
-              )}
-            </Box>
-          );
-        })}
+        <Box mt={4} textAlign="center" width="100%" margin="0 auto">
+          <Typography variant="body1" color="textSecondary">
+            デート情報はまだ登録されていません
+          </Typography>
+        </Box>
 
-        {/* カードが空の場合のメッセージ */}
-        {filteredMeetings.length === 0 && (
-          <Box mt={4} textAlign="center" width="100vw">
-            <Typography variant="body1" color="textSecondary">
-              デート情報はまだ登録されていません
-            </Typography>
-          </Box>
-        )}
+      )}
 
-      </Box>
+      {/* メニュー展開用のFabボタン（大元のメニューアイコン） */}
+      <Fab
+        color="inherit"
+        sx={{
+          position: 'fixed',
+          bottom: 40,
+          right: 20,
+          width: 56,
+          zIndex: 1200,
+        }}
+        onClick={toggleMenuFab}
+        aria-label="メニュー"
+      >
+        {menuFabOpen ? <CloseIcon /> : <MenuIcon />}
+      </Fab>
 
-      {!isDeleteMode && (
+      {menuFabOpen && !isDeleteMode && (
         <>
           <Fab
             color="inherit"
             sx={{
-              position: 'fixed', bottom: 40, right: 20, width: 200, backgroundColor: 'white',
+              position: 'fixed', bottom: 110, right: 20, width: 200, backgroundColor: 'white',
               color: 'black', // アイコンの色を黒に（白背景のため）
               '&:hover': {
                 backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -442,7 +468,7 @@ const fetchNextMeeting = async () => {
 
           <Fab
             sx={{
-              position: 'fixed', bottom: 110, right: 20, width: 200, backgroundColor: 'white',
+              position: 'fixed', bottom: 180, right: 20, width: 200, backgroundColor: 'white',
               color: 'black', // アイコンの色を黒に（白背景のため）
               '&:hover': {
                 backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -457,7 +483,7 @@ const fetchNextMeeting = async () => {
 
           <Fab
             sx={{
-              position: 'fixed', bottom: 180, right: 20, width: 200, backgroundColor: 'white',
+              position: 'fixed', bottom: 250, right: 20, width: 200, backgroundColor: 'white',
               color: 'black', // アイコンの色を黒に（白背景のため）
               '&:hover': {
                 backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -472,7 +498,7 @@ const fetchNextMeeting = async () => {
 
           <Fab
             sx={{
-              position: 'fixed', bottom: 250, right: 20, width: 200, backgroundColor: 'white',
+              position: 'fixed', bottom: 320, right: 20, width: 200, backgroundColor: 'white',
               color: 'black', // アイコンの色を黒に（白背景のため）
               '&:hover': {
                 backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -491,7 +517,7 @@ const fetchNextMeeting = async () => {
 
         <Fab
           color="error"
-          sx={{ position: 'fixed', bottom: 110, right: 20, width: 200 }}
+          sx={{ position: 'fixed', bottom: 180, right: 20, width: 200 }}
           variant="extended"
           onClick={handleDeleteExecute}
         >
@@ -505,7 +531,7 @@ const fetchNextMeeting = async () => {
         <Fab
           color="inherit"
           sx={{
-            position: 'fixed', bottom: 40, right: 20, width: 200, backgroundColor: 'white',
+            position: 'fixed', bottom: 110, right: 20, width: 200, backgroundColor: 'white',
             color: 'black', // アイコンの色を黒に（白背景のため）
             '&:hover': {
               backgroundColor: '#f0f0f0', // ホバー時の色も設定しておくと良い
@@ -514,7 +540,7 @@ const fetchNextMeeting = async () => {
           variant="extended"
           onClick={handleCancelDeleteMode}
         >
-          削除モード解除
+          キャンセル
         </Fab>
 
       )}

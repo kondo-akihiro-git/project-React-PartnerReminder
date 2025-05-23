@@ -1,5 +1,12 @@
 import { TextField, Stack, Typography, Box, Button, useMediaQuery, useTheme } from '@mui/material';
 
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+
+
 interface SearchBarProps {
   filters: {
     title: string;
@@ -14,12 +21,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ filters, onChange, onClear }) => 
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm')); // 画面幅が大きい場合（sm以上）
 
+  const customFormats = {
+    keyboardDate: 'MM/DD', // 入力表示フォーマット
+  };
+
   return (
     <Box mb={4}>
       <Typography variant="caption" sx={{ marginBottom: 2 }}>
         フィルタリング
       </Typography>
-      
+
       {/* 画面幅が大きい場合のレイアウト */}
       {isLargeScreen ? (
         <Stack direction="row" spacing={2} width="100%" alignItems="stretch">
@@ -39,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ filters, onChange, onClear }) => 
             onChange={(e) => onChange('location', e.target.value)}
             sx={{ flex: 1 }}
           />
-          <TextField
+          {/* <TextField
             label="日付"
             type="date"
             variant="outlined"
@@ -48,7 +59,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ filters, onChange, onClear }) => 
             value={filters.date}
             onChange={(e) => onChange('date', e.target.value)}
             sx={{ flex: 1 }}
-          />
+          /> */}
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
+            <DatePicker
+              label={'日付'}
+              orientation='portrait'
+              format="MM/DD"
+              value={filters.date ? dayjs(filters.date) : null}
+              onChange={(newValue) => {
+                const formatted = newValue ? newValue.format('YYYY-MM-DD') : '';
+                onChange('date', formatted);
+              }}
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: { flex: 1 },  // 他のフィールドとバランスを取る
+                },
+              }}
+            />
+          </LocalizationProvider>
+
           <Button
             variant="outlined"
             color="inherit"
@@ -88,7 +118,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ filters, onChange, onClear }) => 
               onChange={(e) => onChange('location', e.target.value)}
               sx={{ flex: 1 }}
             />
-            <TextField
+            {/* <TextField
               label="日付"
               type="date"
               variant="outlined"
@@ -97,7 +127,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ filters, onChange, onClear }) => 
               value={filters.date}
               onChange={(e) => onChange('date', e.target.value)}
               sx={{ flex: 1 }}
+            /> */}
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
+            <DatePicker
+              label={'日付'}
+              orientation='portrait'
+              format="MM/DD"
+              value={filters.date ? dayjs(filters.date) : null}
+              onChange={(newValue) => {
+                const formatted = newValue ? newValue.format('YYYY-MM-DD') : '';
+                onChange('date', formatted);
+              }}
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: { flex: 1 },  // 他のフィールドとバランスを取る
+                },
+              }}
             />
+          </LocalizationProvider>
+
             <Button
               variant="outlined"
               color="inherit"

@@ -8,6 +8,10 @@ import {
   TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface EditNextModalProps {
   open: boolean;
@@ -21,7 +25,8 @@ interface EditNextModalProps {
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
 const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: EditNextModalProps) => {
-  const [newDate, setNewDate] = useState(initialDate);
+  // const [newDate, setNewDate] = useState(initialDate);
+  const [newDate, setNewDate] = useState<Dayjs | null>(initialDate ? dayjs(initialDate) : null);
 
   // 日付を "YYYY-MM-DD" 形式で表示するための変換
   const toInputDateFormat = (dateStr: string): string => {
@@ -34,17 +39,20 @@ const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: Ed
     // open が変わるたびに初期値をセットし直す
   useEffect(() => {
     if (open) {
-      setNewDate(initialDate);
+      // setNewDate(initialDate);
+      setNewDate(initialDate ? dayjs(initialDate) : null);
     }
   }, [open, initialDate]);
 
   const handleSubmit = async () => {
     try {
+      const formatted = newDate ? newDate.format('YYYY-MM-DD') : '';
       const res = await fetch(`${BASE_URL}/next`, {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: newDate }),
+        // body: JSON.stringify({ date: newDate }),
+        body: JSON.stringify({ date: formatted }),
       });
 
       if (!res.ok) throw new Error('更新に失敗しました');
@@ -75,13 +83,28 @@ const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: Ed
   }}
 >
       <DialogTitle>次回デート日を更新</DialogTitle>
-      <DialogContent>
-        <TextField
+      <DialogContent dividers>
+        {/* <TextField
           type="date"
           fullWidth
           value={newDate}
           onChange={(e) => setNewDate(e.target.value)}
-        />
+        /> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn"> {/* ★追加 */}
+          <DatePicker
+            label={'日付'}
+            orientation="portrait"
+            format="MM/DD"
+            value={newDate}
+            onChange={(newValue) => setNewDate(newValue)}
+            slotProps={{
+              textField: {
+                fullWidth: true,
+              },
+            }}
+          />
+        </LocalizationProvider>
+
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color='inherit'>キャンセル</Button>

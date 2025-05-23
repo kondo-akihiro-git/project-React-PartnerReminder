@@ -118,7 +118,15 @@ const Top = () => {
               variant="outlined"
               color="inherit"
               size="large"
-              sx={{ minWidth: '30vw', height: '8vh' }}
+                  sx={{
+      minWidth: '30vw',
+      height: '8vh',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      border: '1px solid #ccc',
+      zIndex: 1,
+      borderRadius: '10px',
+boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    }}
               onClick={() => navigate('/login')}
             >
               ログイン
@@ -127,7 +135,15 @@ const Top = () => {
               variant="outlined"
               color="inherit"
               size="large"
-              sx={{ minWidth: '30vw', height: '8vh' }}
+              sx={{
+      minWidth: '30vw',
+      height: '8vh',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      border: '1px solid #ccc',
+      zIndex: 1,
+      borderRadius: '10px',
+boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    }}
               onClick={() => navigate('/register')}
             >
               新規登録
