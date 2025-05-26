@@ -9,7 +9,7 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -39,6 +39,23 @@ const AddDialog: React.FC<AddDialogProps> = ({ open, onClose, onSaveSuccess }) =
     partner_good_points: '',
     todo_for_next: '',
   });
+
+  useEffect(() => {
+  if (open) {
+    setFormData({
+      title: '',
+      location: '',
+      date: '',
+      event_names: '',
+      talked_topics: '',
+      partner_appearances: '',
+      my_appearance_image_path: '',
+      meeting_photo: '',
+      partner_good_points: '',
+      todo_for_next: '',
+    });
+  }
+}, [open]);
 
   const handleSave = async () => {
     if (!formData.title || !formData.location || !formData.date) {
