@@ -62,11 +62,11 @@ const AddDialog: React.FC<AddDialogProps> = ({ open, onClose, onSaveSuccess }) =
       alert('タイトル、場所、日付は必須です');
       return;
     }
-
+    const token = sessionStorage.getItem("access_token");
     const res = await fetch(`${BASE_URL}/meetings`, {
       method: 'POST',
       credentials: "include",
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',Authorization: `Bearer ${token}`, },
       body: JSON.stringify(formData),
     });
 
@@ -83,9 +83,13 @@ const AddDialog: React.FC<AddDialogProps> = ({ open, onClose, onSaveSuccess }) =
   const handleMyImageUpload = async (file: File) => {
     const fd = new FormData();
     fd.append('file', file);
+    const token = sessionStorage.getItem("access_token");
     const res = await fetch(`${BASE_URL}/upload-image`, {
       method: 'POST',
       body: fd,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await res.json();
     setFormData((prev: any) => ({
@@ -97,9 +101,13 @@ const AddDialog: React.FC<AddDialogProps> = ({ open, onClose, onSaveSuccess }) =
   const handleBackImageUpload = async (file: File) => {
     const fd = new FormData();
     fd.append('file', file);
+    const token = sessionStorage.getItem("access_token");
     const res = await fetch(`${BASE_URL}/upload-image`, {
       method: 'POST',
       body: fd,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await res.json();
     setFormData((prev: any) => ({

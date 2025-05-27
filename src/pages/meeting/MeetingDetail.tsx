@@ -33,7 +33,10 @@ const MeetingDetail = () => {
 
 
   useEffect(() => {
-    fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include", })
+    const token = sessionStorage.getItem("access_token");
+    fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include",headers: {
+    Authorization: `Bearer ${token}`,
+  }, })
       .then((res) => res.json())
       .then((data) => {
         setMeeting(data.meeting);
@@ -42,8 +45,11 @@ const MeetingDetail = () => {
   }, [meetingId]);
 
   useEffect(() => {
+    const token = sessionStorage.getItem("access_token");
     fetch(`${BASE_URL}/me`, {
-      credentials: 'include',
+      credentials: 'include',headers: {
+    Authorization: `Bearer ${token}`,
+  },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -57,17 +63,20 @@ const MeetingDetail = () => {
   }, []);
 
   const handleSave = () => {
+    const token = sessionStorage.getItem("access_token");
     fetch(`${BASE_URL}/meetings/${meetingId}`, {
       method: 'PUT',
       credentials: "include",
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',Authorization: `Bearer ${token}`, },
       body: JSON.stringify(editData),
     }).then(() => {
       setSnackbarOpen(true);
       setOpenEditDialog(false);
 
       // 🔄 更新後のデータを再取得
-      fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include" })
+      fetch(`${BASE_URL}/meetings/${meetingId}`, { credentials: "include",headers: {
+    Authorization: `Bearer ${token}`,
+  }, })
         .then((res) => res.json())
         .then((data) => {
           setMeeting(data.meeting);
@@ -88,13 +97,19 @@ const MeetingDetail = () => {
 
   const handleLogout = async () => {
     try {
+      const token = sessionStorage.getItem("access_token");
       const res = await fetch(`${BASE_URL}/logout`, {
         method: 'POST',
-        credentials: 'include',  // Cookie送信のために必要
+        credentials: 'include',
+        headers: {
+    Authorization: `Bearer ${token}`,
+  },
       });
+
       if (!res.ok) {
         throw new Error('ログアウトに失敗しました');
       }
+      sessionStorage.removeItem("access_token");
       navigate('/login');
     } catch (error) {
       navigate('/login');

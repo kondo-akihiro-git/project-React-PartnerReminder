@@ -57,7 +57,10 @@ const UserSetting: React.FC = () => {
   useEffect(() => {
   const fetchCurrentUser = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/me`, { withCredentials: true });
+      const token = sessionStorage.getItem("access_token")
+      const res = await axios.get(`${BASE_URL}/me`, { withCredentials: true,headers: {
+    Authorization: `Bearer ${token}`,
+  }, });
       setUserId(res.data.user.id);
       setForm({
         name: res.data.user.name || "",
@@ -110,12 +113,18 @@ const UserSetting: React.FC = () => {
   const handleUpdate = async () => {
     if (userId === null) return;
     setShowLoading(true);
+    const token = sessionStorage.getItem("access_token");
+
     try {
       await axios.put(`${BASE_URL}/users/${userId}`, {
         name: form.name,
         phone: form.phone,
         password: form.password,
-      });
+        
+      }, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  }},);
       setSnackbar({ open: true, message: "ユーザー情報を更新しました", severity: "success" });
     } catch {
       setSnackbar({ open: true, message: "ユーザー情報の更新に失敗しました", severity: "error" });
