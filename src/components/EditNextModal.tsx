@@ -47,10 +47,11 @@ const EditNextModal = ({ open, onClose, initialDate,onUpdated, currentDate }: Ed
   const handleSubmit = async () => {
     try {
       const formatted = newDate ? newDate.format('YYYY-MM-DD') : '';
+      const token = sessionStorage.getItem("access_token");
       const res = await fetch(`${BASE_URL}/next`, {
         method: 'PUT',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',Authorization: `Bearer ${token}`, },
         // body: JSON.stringify({ date: newDate }),
         body: JSON.stringify({ date: formatted }),
       });

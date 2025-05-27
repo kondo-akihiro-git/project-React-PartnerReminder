@@ -130,11 +130,15 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
+                      const token = sessionStorage.getItem("access_token");
                       const formData = new FormData();
                       formData.append('file', file);
                       fetch(`${BASE_URL}/upload-image`, {
                         method: 'POST',
                         body: formData,
+                        headers: {
+        Authorization: `Bearer ${token}`,
+      },
                       })
                         .then((res) => res.json())
                         .then((data) => {
@@ -223,11 +227,15 @@ const EditMeetingDialog: React.FC<DialogProps> = ({ open, onClose, editData, set
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
+                      const token = sessionStorage.getItem("access_token");
                       const formData = new FormData();
                       formData.append('file', file);
                       fetch(`${BASE_URL}/upload-image`, {
                         method: 'POST',
                         body: formData,
+                        headers: {
+        Authorization: `Bearer ${token}`,
+      },
                       })
                         .then((res) => res.json())
                         .then((data) => {

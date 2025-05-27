@@ -40,7 +40,11 @@ const GoodPointsList = () => {
   };
 
   const fetchGoodPoints = async () => {
-    const res = await fetch(`${BASE_URL}/goodpoints`,{credentials: "include"});
+    const token = sessionStorage.getItem("access_token");
+
+    const res = await fetch(`${BASE_URL}/goodpoints`,{credentials: "include",headers: {
+        Authorization: `Bearer ${token}`,
+      },});
     const data = await res.json();
     // good_point が空文字や改行だけのものを除外
     const validPoints = data.goodpoints.goodpoints.filter((p: GoodPoint) =>
@@ -80,13 +84,18 @@ useEffect(() => {
 
 const handleLogout = async () => {
   try {
+    const token = sessionStorage.getItem("access_token");
     const res = await fetch(`${BASE_URL}/logout`, {
       method: 'POST',
       credentials: 'include', 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!res.ok) {
       throw new Error('ログアウトに失敗しました');
     }
+    sessionStorage.removeItem("access_token");
     navigate('/login');
   } catch (error) {
     navigate('/login');

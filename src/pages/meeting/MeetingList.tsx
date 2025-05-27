@@ -76,7 +76,10 @@ const MeetingList = () => {
 
 
   const fetchMeetings = async () => {
-    const res = await fetch(`${BASE_URL}/meetings`, { credentials: "include" });
+    const token = sessionStorage.getItem('access_token');
+    const res = await fetch(`${BASE_URL}/meetings`, { credentials: "include",headers: {
+    'Authorization': `Bearer ${token}`,
+  }, });
     const data = await res.json();
     const formatted = data.meetings.map((m: any[]) => ({
       id: m[0],
@@ -103,7 +106,10 @@ const MeetingList = () => {
 
     const fetchNextMeeting = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/next`, { credentials: "include" });
+        const token = sessionStorage.getItem('access_token');
+        const res = await fetch(`${BASE_URL}/next`, { credentials: "include",headers: {
+    'Authorization': `Bearer ${token}`,
+  }, });
 
         if (!res.ok) {
           if (res.status === 404) {
@@ -136,8 +142,11 @@ const MeetingList = () => {
   }, []);
 
   useEffect(() => {
+    const token = sessionStorage.getItem('access_token');
     fetch(`${BASE_URL}/me`, {
-      credentials: 'include',
+      credentials: 'include',headers: {
+    'Authorization': `Bearer ${token}`,
+  },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -181,10 +190,11 @@ const MeetingList = () => {
 
   const handleDeleteExecute = async () => {
     try {
+      const token = sessionStorage.getItem('access_token');
       const response = await fetch(`${BASE_URL}/meetings/delete`, {
         method: 'POST',
         credentials: "include",
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
         body: JSON.stringify({ ids: selectedMeetings }),
       });
 
@@ -224,13 +234,18 @@ const MeetingList = () => {
 
   const handleLogout = async () => {
     try {
+      const token = sessionStorage.getItem('access_token');
       const res = await fetch(`${BASE_URL}/logout`, {
         method: 'POST',
-        credentials: 'include',  // Cookie送信のために必要
+        credentials: 'include', 
+        headers: {
+    'Authorization': `Bearer ${token}`,
+  },
       });
       if (!res.ok) {
         throw new Error('ログアウトに失敗しました');
       }
+      sessionStorage.removeItem("access_token");
       navigate('/login');
     } catch (error) {
       setSnackbarMessage('ログアウト処理でエラーが発生しました');
@@ -565,8 +580,11 @@ const MeetingList = () => {
         onUpdated={(success) => {
           if (success) {
             fetchMeetings();
+            const token = sessionStorage.getItem("access_token");
             // 次回日付も再取得
-            fetch(`${BASE_URL}/next`, { credentials: "include" })
+            fetch(`${BASE_URL}/next`, { credentials: "include",headers: {
+        Authorization: `Bearer ${token}`,
+      }, })
               .then(res => res.json())
               .then(data => {
                 if (data?.date) {

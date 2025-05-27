@@ -35,8 +35,10 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        // CookieにセットされたJWTをサーバーが読むため、axiosはwithCredentials:trueにする
-        await axios.get(`${BASE_URL}/me`, { withCredentials: true });
+        const token = sessionStorage.getItem("access_token");
+        await axios.get(`${BASE_URL}/me`, { withCredentials: true,headers: {
+        Authorization: `Bearer ${token}`,
+      }, });
         setIsChecking(false); // 認証成功
       } catch {
         navigate("/login");

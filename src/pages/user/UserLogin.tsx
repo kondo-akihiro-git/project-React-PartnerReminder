@@ -35,6 +35,8 @@ const handleLogin = async () => {
   });
 
   if (res.ok) {
+    const data = await res.json();
+    sessionStorage.setItem('access_token', data.token); 
     navigate('/meetings');
   } else {
     alert('ログイン失敗');
