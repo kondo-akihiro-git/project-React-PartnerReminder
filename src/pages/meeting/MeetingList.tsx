@@ -348,7 +348,12 @@ const MeetingList = () => {
                   onClick={() => handleCardClick(meeting.id)}
                 >
                   <Box
-                    m={{
+                    mx={{
+                      xs: 1.5, // スマホなどの小さい画面
+                      sm: 4, // タブレットなどの中サイズ
+                      md: 6, // デスクトップなどの通常サイズ以上
+                    }}
+                    mt={{
                       xs: 4, // スマホなどの小さい画面
                       sm: 4, // タブレットなどの中サイズ
                       md: 6, // デスクトップなどの通常サイズ以上
@@ -362,8 +367,8 @@ const MeetingList = () => {
                         sx={{
 
                           fontSize: {
-                            xs: '1.2rem', // スマホ
-                            sm: '1.3rem', // タブレット
+                            xs: '1rem', // スマホ
+                            sm: '1.2rem', // タブレット
                             md: '1.4em',   // 通常画面
                           },
                           color: "white",
